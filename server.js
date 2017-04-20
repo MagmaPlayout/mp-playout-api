@@ -1,27 +1,25 @@
-var express = require ("express");
-var app = new express();
-var http = require("http").Server(app);
-var wsapi= require("./controllers/ws/ws.api");
+var srvRest = require('./servers/rest/srvRest');
+var srvWs = require('./servers/ws/srvWs');
 var config = require("./config.js");
 
 
+console.log("---------------------------------------------------------");
+console.log("-------------- Magma-Playout | Playout-API --------------");
+console.log("---------------------------------------------------------");
 
-var Log = require ("log"),
-	log = new Log("debug");
-
-/*
-* init ws api
+/**
+ * setup REST Server
  */
-wsapi(http,log);
+srvRest.start();
+
+/**
+ * Setup Socket.io Server
+ */
+srvWs.start();
 
 
-var port = process.env.PORT || config.port;
 
 
-http.listen(port,function(){
-	console.log("---------------------------------------------------------");
-	console.log("-------------- Magma-Playout | Playout-API --------------");
-	console.log("---------------------------------------------------------");
-	log.info("server listening on %s",port)
 
-});
+
+
