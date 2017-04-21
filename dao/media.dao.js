@@ -8,8 +8,20 @@ var mediaDao = {}
  */
 mediaDao.getById = function(id,callback)
 {
-	callback(null,[{id:"1", name:"clip1"}]);
+	callback(null,
+		{
+			id:"1", 
+			name:"clip1",
+			duration: "",
+			frameRate : 0,
+			path: "/",
+			frameCount : 2000,
+			description : "clip1 description",
+			resolution : "4:3"
+		}
+		);
 }
+
 
 
 /**
@@ -18,7 +30,28 @@ mediaDao.getById = function(id,callback)
 mediaDao.listAll = function(callback)
 {
 
-	callback(null,[{id:"1", name:"clip1"}, {id:"2", name:"clip2"}]);
+	callback(null,[
+		{
+			id:"1", 
+			name:"clip1",
+			duration: "",
+			frameRate : 0,
+			path: "/",
+			frameCount : 2000,
+			description : "clip1 description",
+			resolution : "4:3"
+		},
+		{
+			id:"2", 
+			name:"clip2",
+			duration: "",
+			frameRate : 0,
+			path: "/",
+			frameCount : 2000,
+			description : "clip2 description",
+			resolution : "4:3"
+		}
+		]);
 }
 
 
