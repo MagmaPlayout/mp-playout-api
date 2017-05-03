@@ -11,5 +11,11 @@ module.exports = {
 	"logger": {
         "api": "logs/api.log",
         "exception": "logs/exceptions.log"
-    }
+    },
+	'db' : {
+		'name' : 'mp_playout_db',
+		'host' : '127.0.0.1',
+		'user' : 'root',
+		'password' : 'root1234'
+	}
 };

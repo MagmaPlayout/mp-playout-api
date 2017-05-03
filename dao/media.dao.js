@@ -1,4 +1,4 @@
-//var db = require('../db/mpadmin.db');
+var db = require('../db/playout.db');
 
 var mediaDao = {}
 
@@ -8,20 +8,14 @@ var mediaDao = {}
  */
 mediaDao.getById = function(id,callback)
 {
-	callback(null,
-		{
-			id:"1", 
-			name:"clip1",
-			duration: "",
-			frameRate : 0,
-			path: "/",
-			frameCount : 2000,
-			description : "clip1 description",
-			resolution : "4:3"
-		}
-		);
-}
+	 db.query("SELECT * FROM Media WHERE id= ?",
+            [id],
+            function(err, rows) {
+                callback(err, rows[0]);
+    });
 
+    db.end();
+}
 
 
 /**
@@ -29,29 +23,13 @@ mediaDao.getById = function(id,callback)
  */
 mediaDao.listAll = function(callback)
 {
+	 db.query("SELECT * FROM Media",
+            function(err, rows) {
+                callback(err, rows);
+    });
 
-	callback(null,[
-		{
-			id:"1", 
-			name:"clip1",
-			duration: "",
-			frameRate : 0,
-			path: "/",
-			frameCount : 2000,
-			description : "clip1 description",
-			resolution : "4:3"
-		},
-		{
-			id:"2", 
-			name:"clip2",
-			duration: "",
-			frameRate : 0,
-			path: "/",
-			frameCount : 2000,
-			description : "clip2 description",
-			resolution : "4:3"
-		}
-		]);
+    db.end();
+
 }
 
 
@@ -81,4 +59,19 @@ mediaDao.delete = function(id)
 	return null;
 }
 
+
+
+/**
+ * find media by name
+ */
+mediaDao.getByName = function(name,callback)
+{
+	 db.query("SELECT * FROM Media WHERE name= ?",
+            [name],
+            function(err, rows) {
+                callback(err, rows);               
+    });
+
+    db.end();
+}
 module.exports = mediaDao;

@@ -115,4 +115,18 @@ mediaController.delete = function(req, res) {
     });
 };
 
+mediaController.getByName= function(req, res){
+    console.log("llegue");
+    mediaDao.getByName(req.params.name, function(err, result) {
+
+            console.log('DEL /medias/name/:name' + req.params.name);
+        
+            if(err) 
+                return res.send(500, err.message);
+        
+            res.status(200).jsonp(result);
+
+    });
+}
+
 module.exports = mediaController;
