@@ -45,12 +45,13 @@ mediaController.listAll = function(req, res) {
  */
 mediaController.update = function(req, res) { 
     
+
     var media = {
 		name: req.body.name,
-		desription: 	  req.body.description,
-		duration:    req.body.duration,
-        frameRate : req.body.frameRate,
-        frameCount: req.body.frameCount,
+		desription: req.body.description,
+		duration: req.body.duration,
+        frameRate: req.body.fps,
+        frameCount: req.body.frames,
         resolution: req.body.resolution,
         path: req.body.path
 
@@ -76,13 +77,13 @@ mediaController.insert = function(req, res) {
    
 	var media = {
 		name: req.body.name,
-		desription: 	  req.body.description,
-		duration:    req.body.duration,
-        frameRate : req.body.frameRate,
+		description: req.body.description,
+		duration: req.body.duration,
+        frameRate: req.body.frameRate,
         frameCount: req.body.frameCount,
         resolution: req.body.resolution,
-        path: req.body.path
-
+        path: req.body.path,
+        thumbnails: [{path: req.body.thumbnails}]
 	};
 
     mediaDao.insert(media, function(err, result) {
@@ -90,7 +91,7 @@ mediaController.insert = function(req, res) {
         console.log('POST /medias');
     
         if(err) 
-            return res.send(500, err.message);
+            return res.status(500).send(err.message);
      
         res.status(200).jsonp(result);
 
