@@ -83,7 +83,7 @@ mediaController.insert = function(req, res) {
         frameCount: req.body.frameCount,
         resolution: req.body.resolution,
         path: req.body.path,
-        thumbnails: [{path: req.body.thumbnails}]
+        thumbnails: req.body.thumbnails
 	};
 
     mediaDao.insert(media, function(err, result) {

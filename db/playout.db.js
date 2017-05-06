@@ -16,7 +16,8 @@ var Client = new Client({
   host: config.db.host,
   user: config.db.user,
   password: config.db.password,
-  db: config.db.name
+  db: config.db.name,
+  multiStatements: true
 });
 
 module.exports = Client;
