@@ -116,18 +116,44 @@ mediaController.delete = function(req, res) {
     });
 };
 
+/**
+ * GET - find medias by name
+ */
 mediaController.getByName= function(req, res){
-    console.log("llegue");
+
     mediaDao.getByName(req.params.name, function(err, result) {
 
-            console.log('DEL /medias/name/:name' + req.params.name);
-        
+        console.log('DEL /medias/name/:name' + req.params.name);
+    
+        if(err) 
+            return res.send(500, err.message);
+    
+        res.status(200).jsonp(result);
+
+    });
+}
+
+/**
+ * GET - find medias by path
+ */
+mediaController.getByPathList= function(req, res){
+    console.log(JSON.parse(req.params.pathlist));
+
+    return res.status(200);
+    /*
+    res.pathlist.forEach(function(path){
+
+        mediaDao.getByName(path, function(err, result) {
             if(err) 
                 return res.send(500, err.message);
         
             res.status(200).jsonp(result);
 
+        });
+
     });
+    */
+    
 }
 
 module.exports = mediaController;

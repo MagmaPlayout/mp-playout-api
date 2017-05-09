@@ -13,7 +13,7 @@ module.exports = {
         "exception": "logs/exceptions.log"
     },
 	'db' : {
-		'name' : 'mp_playout_db',
+		'name' : 'mp_playout',
 		'host' : '127.0.0.1',
 		'user' : 'root',
 		'password' : 'root1234'
