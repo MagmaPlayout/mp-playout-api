@@ -101,16 +101,22 @@ mediaDao.getByName = function(name,callback)
 
 
 /**
- * find media by path
+ * find media by path list
  */
-mediaDao.getByPath = function(name,callback)
+mediaDao.getByPathList = function(pathList,callback)
 {
-	 db.query("SELECT * FROM Media WHERE path= ?",
-            [name],
+   
+	 var query = "SELECT * FROM Media WHERE path IN ("+
+                        (pathList.map(function(item) { return '?' })).join(",")
+                        +")";
+
+     db.query(query,
+            pathList,
             function(err, rows) {
                 callback(err, rows);               
     });
 
     db.end();
 }
+
 module.exports = mediaDao;

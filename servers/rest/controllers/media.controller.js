@@ -134,26 +134,21 @@ mediaController.getByName= function(req, res){
 }
 
 /**
- * GET - find medias by path
+ * GET - find medias by path list
  */
 mediaController.getByPathList= function(req, res){
-    console.log(JSON.parse(req.params.pathlist));
 
-    return res.status(200);
-    /*
-    res.pathlist.forEach(function(path){
-
-        mediaDao.getByName(path, function(err, result) {
-            if(err) 
-                return res.send(500, err.message);
-        
-            res.status(200).jsonp(result);
-
-        });
+    var pathList = JSON.parse(req.params.pathlist);
+  
+    mediaDao.getByPathList(pathList, function(err, result) {
+        console.log(result);
+        if(err) 
+            return res.send(500, err.message);
+    
+        res.status(200).jsonp(result);
 
     });
-    */
-    
+     
 }
 
 module.exports = mediaController;
