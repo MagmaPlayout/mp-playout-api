@@ -1,16 +1,16 @@
 var db = require('../db/playout.db');
 var _ = require('underscore');
 
-var mediaDao = {}
+var pieceDao = {}
 
 
 /**
- * find media by id
+ * find piece by id
  */
-mediaDao.getById = function(id,callback)
+pieceDao.getById = function(id,callback)
 {
 
-	db.query("SELECT * FROM Media WHERE id= ?",
+	db.query("SELECT * FROM Piece WHERE id= ?",
             [id],
             function(err, rows) {
                 callback(err, rows[0]);
@@ -21,62 +21,38 @@ mediaDao.getById = function(id,callback)
 
 
 /**
- *  get all medias
+ *  get all pieces
  */
-mediaDao.listAll = function(callback)
+pieceDao.listAll = function(callback)
 {
     
-    mapMediaObject(null, callback);
+    mapPieceObject(null, callback);
 
 }
 
 
 /**
- * insert new media
+ * insert new piece
  */
-mediaDao.update= function(mediaData)
+pieceDao.update= function(pieceData)
 {
 	return null;
 }
 
 
 /**
- * insert new media
+ * insert new piece
  */
-mediaDao.insert = function(mediaData, callback)
+pieceDao.insert = function(pieceData, callback)
 {
-    var strQuery = "START TRANSACTION;"+
-                "INSERT INTO Media (duration, name, frameRate, path, frameCount, description, resolution) VALUES ('"+mediaData.duration+"',"+
-                                                                                                                    " '"+mediaData.name+"',"+
-                                                                                                                    " '"+mediaData.frameRate+"',"+
-                                                                                                                    " '"+mediaData.path+"',"+
-                                                                                                                    " '"+mediaData.frameCount+"',"+
-                                                                                                                    " '"+mediaData.description+"',"+
-                                                                                                                    " '"+mediaData.resolution+"');";    
-    strQuery = strQuery+"INSERT INTO Thumbnail (mediaId, path) VALUES ";                                                                                                                    
-    mediaData.thumbnails.forEach(thumb => {
-        strQuery = strQuery + "(LAST_INSERT_ID(),'"+thumb.path+"'),"
-    });
-    strQuery = strQuery+"COMMIT;";
-    strQuery = strQuery.split(''); 
-    strQuery.splice(strQuery.lastIndexOf(','),1,';'); 
-    strQuery = strQuery.join(''); 
-    db.query(strQuery, function(err) {
-                callback(err);
-    });
-    
-    // TODO: Luego de insertar el Media, debo iterar el array 'mediaData.thumbnails' y hacer un INSERT INTO Thumbnails por cada objeto dentro del array
-    // referenciando a la ID del Media que acabo de insertar. MySql -> LAST_INSERT_ID() 
-
-    db.end();
-	//return null;
+    return null;
 }
 
 
 /**
- * delete a media
+ * delete a piece
  */
-mediaDao.delete = function(id)
+pieceDao.delete = function(id)
 {
 	return null;
 }
@@ -84,57 +60,79 @@ mediaDao.delete = function(id)
 
 
 /**
- * find media by name
+ * find piece by name
  */
-mediaDao.getByName = function(name,callback)
+pieceDao.getByName = function(name,callback)
 {
 	
     var whereClause = "name = " + name;
 
-    mapMediaObject(whereClause,callback);
+    mapPieceObject(whereClause,callback);
 }
 
 
 /**
- * find media by path list
+ * find piece by path list
+ * @param {List<string>} pathList 
  */
-mediaDao.getByPathList = function(pathList,callback)
+pieceDao.getByPathList = function(pathList,callback)
 {
-   
-	 var whereClause = "path IN ("+
+    db.query("SELECT * FROM Piece WHERE path IN ("+
                         (pathList.map(function(item) { return '?' })).join(",")
-                        +")";
+                        +")",
+            function(err, rows) {
+                callback(err, rows);
+    });
 
-     mapMediaObject(whereClause,callback);
 }
 
 
 /**
  * Private method
- * Map mediaInfo and thumbnails object to media
+ * Map pieceInfo and thumbnails object to piece
  * @param where(nullable) => SQL Conditional WHERE clause 
  */
 // es lo unico que se me ocurree por ahora (es medio cabeza)
-var mapMediaObject = function(whereClause, callback){ 
+var mapPieceObject = function(whereClause, callback){ 
    
-    var query = "SELECT m.*,"+ 
+    var query = "SELECT	m.*,"+
+                    "p.id AS p_id,p.name AS p_name, p.duration AS p_duration, p.path AS p_path,"+
+                    "p.resolution AS p_resolution, p.sketchId AS p_sketchId, p.mediaId AS p_mediaId,"+
                     "mi.id AS mi_id, mi.mediaId AS mi_mediaId, mi.key, mi.value,"+
-                    "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path " +
-                "FROM Media m " +
-                    "LEFT JOIN MediaInfo mi ON m.id = mi.mediaId "+
-                    "LEFT JOIN Thumbnail t ON t.mediaId = m.id" +
+                    "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path "+
+                "FROM Piece p "+
+                    "INNER JOIN Media m ON m.id = p.mediaId "+
+                    "INNER JOIN MediaInfo mi ON mi.mediaId = p.mediaId "+
+                    "INNER JOIN Thumbnail t ON t.mediaId = p.mediaId "+
                 (whereClause == null  ? "" : "WHERE " + whereClause) 
                 
 
+    var pieceList = [];
     var mediaList = [];
     var thumbnailList = [];
     var mediaInfoList = [];
 
 	db.query(query,
             function(err, rows) {
+                
+                //keep only unique piece object
+                pieceList = _.unique(rows,"p_id").map(function(item){
+                    return {
+                        id : item.p_id,
+                        name : item.p_name,
+                        path : item.p_path,
+                        duration : item.p_duration,
+                        resolution : item.p_resolution,
+                        mediaId : item.p_mediaId,
+                        sketchId : item.p_sketchId,
+                        media : null,
+                        sketch : null
+                    }
+                });
+                
                 //keep only unique media object
                 mediaList = _.uniq(rows, 'id').map(function(media){
-                    return {
+                    return {                      
                         id: media.id,
                         duration : media.duration,
                         name : media.name,
@@ -145,6 +143,7 @@ var mapMediaObject = function(whereClause, callback){
                         resolution : media.resolution,
                         thumbnails : [],
                         mediaInfo : []
+                       
                     }
 
 
@@ -181,7 +180,8 @@ var mapMediaObject = function(whereClause, callback){
                         
                     })
                 );
-
+                
+              
                  //get mediaInfo for each media
                 mediaList.forEach(media => 
                     mediaInfoList.forEach(function(mi){
@@ -194,7 +194,18 @@ var mapMediaObject = function(whereClause, callback){
                     })
                 );
                
-                callback(err, mediaList);
+                
+                //match media/piece
+                pieceList.forEach(piece => 
+                    mediaList.forEach(function(m){
+                        if(piece.mediaId == m.id)
+                            piece.media = m          
+                    })
+                );
+
+                //TO-DO -> map sketch
+              
+                callback(err, pieceList);
     });
 
     db.end();
@@ -202,4 +213,4 @@ var mapMediaObject = function(whereClause, callback){
 
 }
 
-module.exports = mediaDao;
+module.exports = pieceDao;

@@ -2,7 +2,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
-var media = require("./controllers/media.controller");
+var mediaController = require("./controllers/media.controller");
+var pieceController = require("./controllers/piece.controller");
 var config = require("../../config.js");
 var routes = require('./routes');
 var fs = require('fs');
@@ -29,7 +30,8 @@ app.all('/*', function(req, res, next) {
 
 
 var controllers = {
-  media: media
+  media: mediaController,
+  piece : pieceController
   /** 
    * ...
    * Aca van todos los controlers 

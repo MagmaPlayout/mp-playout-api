@@ -1,4 +1,4 @@
-var mediaDao = require('../../../dao/media.dao');
+var pieceDao = require('../../../dao/piece.dao');
 var sketchDao = require('../../../dao/sketch.dao');
 
 /* register-handler.js */
@@ -7,12 +7,12 @@ module.exports = function (socket) {
   socket.on('playoutLiveMode', function (data) {
     console.log('liveModeInit request');
 
-    mediaDao.listAll(function(err, result){
+    pieceDao.listAll(function(err, result){
 
       if(err)
         throw err;
 
-      socket.broadcast.emit("mediaList", result);
+      socket.broadcast.emit("pieceList", result);
 
     });
 
