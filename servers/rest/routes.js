@@ -1,3 +1,6 @@
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 function setup(app, controllers) {
 	//medias api   
 	app.get('/api/medias/:id', controllers.media.getById);
@@ -16,6 +19,14 @@ function setup(app, controllers) {
 	app.delete('/api/pieces/:id', controllers.piece.delete);
 	app.get('/api/pieces/name/:name', controllers.piece.getByName);
 	app.get('/api/pieces/path/:pathlist', controllers.piece.getByPathList);
+
+	//occurrence api
+	app.get('/api/occurrences/:id', controllers.occurrence.getById);
+    app.get('/api/occurrences', controllers.occurrence.listAll);
+	app.put('/api/occurrences/:id', controllers.occurrence.update);
+    app.post('/api/occurrences', controllers.occurrence.insert);
+	app.delete('/api/occurrences/:id', controllers.occurrence.delete);
+	
 }
 
 exports.setup = setup;

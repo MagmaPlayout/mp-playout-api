@@ -1,6 +1,9 @@
 var db = require('../db/playout.db');
 var _ = require('underscore');
 
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 var mediaDao = {}
 
 

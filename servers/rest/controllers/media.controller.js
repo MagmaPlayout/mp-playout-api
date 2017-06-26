@@ -1,6 +1,9 @@
 var mediaDao = require ('../../../dao/media.dao.js');
 var config = require('../../../config');
 
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 var mediaController = {};
 
 
@@ -8,7 +11,7 @@ var mediaController = {};
  * GET - Return a media with specified ID
  */
 mediaController.getById = function(req, res) { 
-
+    
     mediaDao.getById(req.params.id, function(err, result) {
 
         if(err) 

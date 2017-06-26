@@ -1,5 +1,9 @@
 var pieceDao = require ('../../../dao/piece.dao.js');
 var config = require('../../../config');
+
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 var pieceController = {};
 
 

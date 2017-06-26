@@ -2,6 +2,9 @@ var pieceDao = require('../../../dao/piece.dao');
 var sketchDao = require('../../../dao/sketch.dao');
 
 /* register-handler.js */
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 module.exports = function (socket) {
   // registration related behaviour goes here...
   socket.on('playoutLiveMode', function (data) {

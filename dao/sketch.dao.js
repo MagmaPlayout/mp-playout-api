@@ -1,5 +1,8 @@
 var db = require('../db/playout.db');
 
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 var sketchDao = {}
 
 
