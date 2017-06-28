@@ -55,18 +55,29 @@ mediaDao.insert = function(mediaData, callback)
                                                                                                                     " '"+mediaData.path+"',"+
                                                                                                                     " '"+mediaData.frameCount+"',"+
                                                                                                                     " '"+mediaData.description+"',"+
-                                                                                                                    " '"+mediaData.resolution+"');";    
+                                                                                                                    " '"+mediaData.resolution+"');";  
+    strQuery = strQuery+"SET @last_media_id = LAST_INSERT_ID();";
+                                                                                                                    
+   strQuery = strQuery +"INSERT INTO Piece (mediaId, name, resolution, duration) VALUES"+
+                        "(@last_media_id,"+
+                        " '"+mediaData.name+"',"+
+                        " '"+mediaData.resolution+"',"+
+                        " '"+mediaData.duration+"');";
+   
     strQuery = strQuery+"INSERT INTO Thumbnail (mediaId, path) VALUES ";                                                                                                                    
     mediaData.thumbnails.forEach(thumb => {
-        strQuery = strQuery + "(LAST_INSERT_ID(),'"+thumb.path+"'),"
+        strQuery = strQuery + "(@last_media_id,'"+thumb.path+"'),"
     });
+
+    
+
     strQuery = strQuery+"COMMIT;";
     strQuery = strQuery.split(''); 
-    strQuery.splice(strQuery.lastIndexOf(','),1,';'); 
+    strQuery.splice(strQuery.lastIndexOf(','),1,';');  //hack para la ultima coma convertirla en punto y coma
     strQuery = strQuery.join(''); 
     db.query(strQuery, function(err) {
-                callback(err);
-    });
+        callback(err);
+    });   
     
     // TODO: Luego de insertar el Media, debo iterar el array 'mediaData.thumbnails' y hacer un INSERT INTO Thumbnails por cada objeto dentro del array
     // referenciando a la ID del Media que acabo de insertar. MySql -> LAST_INSERT_ID() 
