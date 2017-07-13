@@ -13,11 +13,32 @@ var occurrenceDao = {}
 occurrenceDao.getById = function(id,callback)
 {
 
-	db.query("SELECT * FROM Occurrence WHERE id= ?",
-            [id],
+	db.query("SELECT o.*, p.name, p.duration " +
+            "FROM Occurrence o " +
+            "INNER JOIN Piece p on p.id = o.pieceId " +
+            "WHERE o.id = ? ",
+            [id],           
             function(err, rows) {
-                callback(err, rows[0]);
-    });
+
+                var occurrenceMap = rows == null ? null : rows.map(function(item){
+                    return {
+                        id : item.id,
+                        playlistId : item.playlistId, 
+                        pieceId : item.pieceId, 
+                        startDateTime : item.startDateTime,
+                        filterId : item.filterId,
+                        piece : {
+                            id : item.pieceId,
+                            name : item.name,
+                            duration : item.duration
+                        }
+                        
+                    }
+                });
+
+                callback(err, occurrenceMap[0]);
+            }
+    );
 
     db.end();
 }
@@ -29,10 +50,30 @@ occurrenceDao.getById = function(id,callback)
 occurrenceDao.listAll = function(callback)
 {
     
-   db.query("SELECT * FROM Occurrence",           
+   db.query("SELECT o.*, p.name, p.duration "+
+            "FROM Occurrence o "+
+            "INNER JOIN Piece p on p.id = o.pieceId",           
             function(err, rows) {
-                callback(err, rows);
-    });
+
+                var occurrenceMap = rows == null ? null : rows.map(function(item){
+                    return {
+                        id : item.id,
+                        playlistId : item.playlistId, 
+                        pieceId : item.pieceId, 
+                        startDateTime : item.startDateTime,
+                        filterId : item.filterId,
+                        piece : {
+                            id : item.pieceId,
+                            name : item.name,
+                            duration : item.duration
+                        }
+                        
+                    }
+                });
+
+                callback(err, occurrenceMap);
+            }
+    );
 
     db.end();
 
@@ -40,7 +81,7 @@ occurrenceDao.listAll = function(callback)
 
 
 /**
- * insert new occurrence
+ * update an occurrence
  */
 occurrenceDao.update= function(occurrenceData,callback)
 {
@@ -92,7 +133,7 @@ occurrenceDao.insert = function(occurrenceData, callback)
 
 
 /**
- * delete a occurrence
+ * delete an occurrence
  */
 occurrenceDao.delete = function(id,callback)
 {

@@ -105,8 +105,8 @@ var mapPieceObject = function(whereClause, callback){
                     "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path "+
                 "FROM Piece p "+
                     "INNER JOIN Media m ON m.id = p.mediaId "+
-                    "INNER JOIN MediaInfo mi ON mi.mediaId = p.mediaId "+
-                    "INNER JOIN Thumbnail t ON t.mediaId = p.mediaId "+
+                    "LEFT JOIN MediaInfo mi ON mi.mediaId = p.mediaId "+
+                    "LEFT JOIN Thumbnail t ON t.mediaId = p.mediaId "+
                 (whereClause == null  ? "" : "WHERE " + whereClause) 
                 
 

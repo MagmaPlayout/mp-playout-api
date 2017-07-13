@@ -55,7 +55,7 @@ occurrenceController.update = function(req, res) {
 		filterId: req.body.filerId,     
 	};
 
-    ocurrenceDao.update(ocurrence, function(err,result) {
+    occurrenceDao.update(ocurrence, function(err,result) {
         if(err) 
             return res.status(500).send(err.message);
      
@@ -79,7 +79,7 @@ occurrenceController.insert = function(req, res) {
 		filterId: req.body.filerId,     
 	};
 
-    ocurrenceDao.insert(ocurrence, function(err, result) {
+    occurrenceDao.insert(ocurrence, function(err, result) {
 
         if(err) 
             return res.status(500).send(err.message);
@@ -96,7 +96,7 @@ occurrenceController.insert = function(req, res) {
  */
 occurrenceController.delete = function(req, res) { 
 
-    ocurrenceDao.delete(res.body.id, function(err) {
+    occurrenceDao.delete(res.body.id, function(err) {
 
         if(err) 
             return res.status(500).send(err.message);

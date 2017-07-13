@@ -44,9 +44,9 @@ function start() {
   routes.setup(app, controllers);
   var port = process.env.PORT || config.rest.port;
   app.listen(port);
-  console.log("***************************************************************");
-  console.log("Express server listening on port %d in %s mode", port, app.settings.env);
-  console.log("***************************************************************");
+  console.log("_______________________________________________________________");
+  console.log("-> Express server listening on port %d in %s mode", port, app.settings.env);
+  console.log("_______________________________________________________________");
 }
 // *******************************************************
 exports.start = start;

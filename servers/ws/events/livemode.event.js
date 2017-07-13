@@ -1,15 +1,15 @@
 var pieceDao = require('../../../dao/piece.dao');
 var sketchDao = require('../../../dao/sketch.dao');
 
-/* register-handler.js */
 /**
  * @author Luis Muñoz <luismunoz.dh@gmail.com>
  */
-module.exports = function (socket) {
-  // registration related behaviour goes here...
-  socket.on('playoutLiveMode', function (data) {
-    console.log('liveModeInit request');
+module.exports = function (socket,log) {
 
+  socket.on('playoutLiveMode', function (data) {
+   
+    log.info("trigger playoutLiveMode event");
+    
     pieceDao.listAll(function(err, result){
 
       if(err)
