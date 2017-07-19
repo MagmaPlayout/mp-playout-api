@@ -50,9 +50,10 @@ occurrenceDao.getById = function(id,callback)
 occurrenceDao.listAll = function(callback)
 {
     
-   db.query("SELECT o.*, p.name, p.duration "+
+   db.query("SELECT o.*, p.name, p.duration, p.path "+
             "FROM Occurrence o "+
-            "INNER JOIN Piece p on p.id = o.pieceId",           
+            "INNER JOIN Piece p on p.id = o.pieceId "+
+            "ORDER BY o.startDateTime",           
             function(err, rows) {
 
                 var occurrenceMap = rows == null ? null : rows.map(function(item){
@@ -65,7 +66,8 @@ occurrenceDao.listAll = function(callback)
                         piece : {
                             id : item.pieceId,
                             name : item.name,
-                            duration : item.duration
+                            duration : item.duration,
+                            path: item.path
                         }
                         
                     }
