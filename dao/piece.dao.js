@@ -100,7 +100,7 @@ var mapPieceObject = function(whereClause, callback){
    
     var query = "SELECT	m.*,"+
                     "p.id AS p_id,p.name AS p_name, p.duration AS p_duration, p.path AS p_path,"+
-                    "p.resolution AS p_resolution, p.sketchId AS p_sketchId, p.mediaId AS p_mediaId,"+
+                    "p.resolution AS p_resolution, p.mediaId AS p_mediaId,"+
                     "mi.id AS mi_id, mi.mediaId AS mi_mediaId, mi.key, mi.value,"+
                     "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path "+
                 "FROM Piece p "+
@@ -126,10 +126,8 @@ var mapPieceObject = function(whereClause, callback){
                         path : item.p_path,
                         duration : item.p_duration,
                         resolution : item.p_resolution,
-                        mediaId : item.p_mediaId,
-                        sketchId : item.p_sketchId,
-                        media : null,
-                        sketch : null
+                        mediaId : item.p_mediaId,                       
+                        media : null                       
                     }
                 });
                 
@@ -205,9 +203,7 @@ var mapPieceObject = function(whereClause, callback){
                             piece.media = m          
                     })
                 );
-
-                //TO-DO -> map sketch
-              
+          
                 callback(err, pieceList);
     });
 

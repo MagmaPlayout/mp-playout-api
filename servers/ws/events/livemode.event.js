@@ -19,6 +19,8 @@ module.exports = function (socket,log) {
 
     });
 
+    socket.broadcast.emit("sketchList", null);
+    /*
     sketchDao.listAll(function(err, result){
 
       if(err)
@@ -27,6 +29,7 @@ module.exports = function (socket,log) {
       socket.broadcast.emit("sketchList", result);
 
     })
+    */
 
   });
 
