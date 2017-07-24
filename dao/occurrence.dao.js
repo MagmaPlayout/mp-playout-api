@@ -50,7 +50,7 @@ occurrenceDao.getById = function(id,callback)
 occurrenceDao.listAll = function(callback)
 {
     
-   db.query("SELECT o.*, p.name, p.duration, p.path "+
+   db.query("SELECT o.*, p.name, p.duration, p.path, p.frameRate, p.frameCount "+
             "FROM Occurrence o "+
             "INNER JOIN Piece p on p.id = o.pieceId "+
             "ORDER BY o.startDateTime",           
@@ -67,7 +67,9 @@ occurrenceDao.listAll = function(callback)
                             id : item.pieceId,
                             name : item.name,
                             duration : item.duration,
-                            path: item.path
+                            path: item.path,
+                            frameRate : item.frameRate,
+                            frameCount : item.frameCount
                         }
                         
                     }

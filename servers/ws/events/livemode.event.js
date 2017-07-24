@@ -19,6 +19,7 @@ module.exports = function (socket,log) {
 
     });
 
+    // TO-DO -> cambiar por filtros.
     socket.broadcast.emit("sketchList", null);
     /*
     sketchDao.listAll(function(err, result){
