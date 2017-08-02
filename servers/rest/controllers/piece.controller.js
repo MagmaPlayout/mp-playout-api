@@ -54,7 +54,25 @@ pieceController.update = function(req, res) {
  */
 pieceController.insert = function(req, res) { 
    
-	res.send(500, "Not implemented");
+	var piece = {
+		name : req.body.name, 
+        mediaId : req.body.mediaId, 
+        resolution : req.body.resolution,
+        duration : req.body.duration,
+        path : req.body.path,
+        filterId : req.body.filterId,
+        frameCount : req.body.frameCount,
+        frameRate : req.body.frameRate     
+	};
+
+    pieceDao.insert(piece, function(err, result) {
+
+        if(err) 
+            return res.status(500).send(err.message);
+     
+        res.status(200).jsonp(result);
+
+    });
 };
 
 

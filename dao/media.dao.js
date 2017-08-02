@@ -57,13 +57,6 @@ mediaDao.insert = function(mediaData, callback)
                                                                                                                     " '"+mediaData.description+"',"+
                                                                                                                     " '"+mediaData.resolution+"');";  
     strQuery = strQuery+"SET @last_media_id = LAST_INSERT_ID();";
-                                                                                                                    
-   strQuery = strQuery +"INSERT INTO Piece (mediaId, name, resolution, duration) VALUES"+
-                        "(@last_media_id,"+
-                        " '"+mediaData.name+"',"+
-                        " '"+mediaData.resolution+"',"+
-                        " '"+mediaData.duration+"');";
-   
     strQuery = strQuery+"INSERT INTO Thumbnail (mediaId, path) VALUES ";                                                                                                                    
     mediaData.thumbnails.forEach(thumb => {
         strQuery = strQuery + "(@last_media_id,'"+thumb.path+"'),"

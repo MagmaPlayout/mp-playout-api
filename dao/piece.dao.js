@@ -48,12 +48,34 @@ pieceDao.update= function(pieceData)
  */
 pieceDao.insert = function(pieceData, callback)
 {
-    return null;
+     db.query(
+                "INSERT INTO Piece (name, mediaId, resolution, duration, path, filterId, frameCount, frameRate) "+
+                "VALUES (:name,:mediaId,:resolution,:duration,:path,:filterId,:frameCount,:frameRate) ",
+              
+                {
+                    name : pieceData.name, 
+                    mediaId : pieceData.mediaId, 
+                    resolution : pieceData.resolution,
+                    duration : pieceData.duration,
+                    path : pieceData.path,
+                    filterId : pieceData.filterId,
+                    frameCount : pieceData.frameCount,
+                    frameRate : pieceData.frameRate
+                }              
+                , 
+                function(err,result) {                                                   
+                    pieceData.id = result.info.insertId
+                    callback(err,pieceData);
+                }
+    );
+    
+    db.end();
 }
 
 
 /**
- * delete a piece
+ * delete a piece (Not implemented)
+ * 
  */
 pieceDao.delete = function(id)
 {
