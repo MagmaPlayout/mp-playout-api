@@ -68,8 +68,9 @@ mediaDao.insert = function(mediaData, callback)
     strQuery = strQuery.split(''); 
     strQuery.splice(strQuery.lastIndexOf(','),1,';');  //hack para la ultima coma convertirla en punto y coma
     strQuery = strQuery.join(''); 
-    db.query(strQuery, function(err) {
-        callback(err);
+    db.query(strQuery, function(err,result) {
+        mediaData.id = result.info.insertId
+        callback(err,mediaData);
     });   
     
     // TODO: Luego de insertar el Media, debo iterar el array 'mediaData.thumbnails' y hacer un INSERT INTO Thumbnails por cada objeto dentro del array
