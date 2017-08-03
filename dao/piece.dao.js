@@ -63,8 +63,14 @@ pieceDao.insert = function(pieceData, callback)
                     frameRate : pieceData.frameRate
                 }              
                 , 
-                function(err,result) {                                                   
-                    pieceData.id = result.info.insertId
+                function(err,result) {
+                    if(!err){
+                        pieceData.id = result.info.insertId
+                    }
+                    else{
+                        pieceData = null;
+                    }                                                   
+                    
                     callback(err,pieceData);
                 }
     );

@@ -48,7 +48,8 @@ mediaDao.update= function(mediaData)
  */
 mediaDao.insert = function(mediaData, callback)
 {
-    var strQuery = "START TRANSACTION;"+
+    mediaData.thumbnails = []
+    var strQuery = 
                 "INSERT INTO Media (duration, name, frameRate, path, frameCount, description, resolution) VALUES ('"+mediaData.duration+"',"+
                                                                                                                     " '"+mediaData.name+"',"+
                                                                                                                     " '"+mediaData.frameRate+"',"+
@@ -64,12 +65,19 @@ mediaDao.insert = function(mediaData, callback)
 
     
 
-    strQuery = strQuery+"COMMIT;";
+   
     strQuery = strQuery.split(''); 
     strQuery.splice(strQuery.lastIndexOf(','),1,';');  //hack para la ultima coma convertirla en punto y coma
     strQuery = strQuery.join(''); 
     db.query(strQuery, function(err,result) {
-        mediaData.id = result.info.insertId
+        if(!err){   
+            console.log(result[0]);
+            mediaData.id = result[0].info.insertId
+        
+        }
+        else{
+            mediaData = null;
+        }
         callback(err,mediaData);
     });   
     

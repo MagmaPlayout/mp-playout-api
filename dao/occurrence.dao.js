@@ -126,8 +126,13 @@ occurrenceDao.insert = function(occurrenceData, callback)
                     filterId : occurrenceData.filterId
                 }              
                 , 
-                function(err,result) {                                                   
-                    occurrenceData.id = result.info.insertId
+                function(err,result) {  
+                    if(!err){
+                        occurrenceData.id = result.info.insertId
+                    }                                                 
+                    else{
+                        occurrenceData = null;
+                    }
                     callback(err,occurrenceData);
                 }
    );
