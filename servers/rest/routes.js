@@ -23,9 +23,9 @@ function setup(app, controllers) {
 	//occurrence api
 	app.get('/api/occurrences/:id', controllers.occurrence.getById);
     app.get('/api/occurrences', controllers.occurrence.listAll);
-	app.put('/api/occurrences/:id', controllers.occurrence.update);
+	app.put('/api/occurrences', controllers.occurrence.update);
     app.post('/api/occurrences', controllers.occurrence.insert);
-	app.delete('/api/occurrences/:id', controllers.occurrence.delete);
+	app.delete('/api/occurrences', controllers.occurrence.delete);
 	
 }
 

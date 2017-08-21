@@ -89,6 +89,7 @@ occurrenceDao.listAll = function(callback)
  */
 occurrenceDao.update= function(occurrenceData,callback)
 {
+    console.log(occurrenceData);
 	 db.query("UPDATE Occurrence SET playlistId = :playlistId,"+ 
                     "pieceId = :pieceId, startDateTime = :startDateTime, filterId = :filterId " +
                 "WHERE id = :id",
@@ -97,9 +98,10 @@ occurrenceDao.update= function(occurrenceData,callback)
                     pieceId : occurrenceData.pieceId, 
                     startDateTime : occurrenceData.startDateTime,
                     filterId : occurrenceData.filterId,
-                    id : occurrenceData.id
+                    id : parseInt(occurrenceData.id)
                 }, 
                 function(err, result) {
+                    console.log(result);
                     callback(err, result);
                 }
     );
@@ -151,6 +153,7 @@ occurrenceDao.delete = function(id,callback)
                    id : id
                 }, 
                 function(err, result) {
+                    console.log(result);
                     callback(err, result);
                 }
     );

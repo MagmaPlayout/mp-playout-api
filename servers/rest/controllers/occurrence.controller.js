@@ -47,7 +47,7 @@ occurrenceController.listAll = function(req, res) {
  */
 occurrenceController.update = function(req, res) { 
     
-    var ocurrence = {
+    var occurrence = {
         id: req.body.id,
 		playlistId: req.body.playlistId,
 		pieceId: req.body.pieceId,
@@ -55,7 +55,7 @@ occurrenceController.update = function(req, res) {
 		filterId: req.body.filerId,     
 	};
 
-    occurrenceDao.update(ocurrence, function(err,result) {
+    occurrenceDao.update(occurrence, function(err,result) {
         if(err) 
             return res.status(500).send(err.message);
      
@@ -71,7 +71,7 @@ occurrenceController.update = function(req, res) {
  * @returns {Occurrence} last inserted
  */
 occurrenceController.insert = function(req, res) { 
-   
+    
 	var ocurrence = {
 		playlistId: req.body.playlistId,
 		pieceId: req.body.pieceId,
@@ -94,13 +94,13 @@ occurrenceController.insert = function(req, res) {
  * DEL - Delete a occurrence with specified ID
  * @returns {bool}
  */
-occurrenceController.delete = function(req, res) { 
+occurrenceController.delete = function (req, res) {
 
-    occurrenceDao.delete(res.body.id, function(err) {
+    occurrenceDao.delete(req.body.id, function (err) {
 
-        if(err) 
+        if (err)
             return res.status(500).send(err.message);
-     
+
         res.status(200).jsonp(true);
 
     });

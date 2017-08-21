@@ -63,17 +63,13 @@ mediaDao.insert = function(mediaData, callback)
         strQuery = strQuery + "(@last_media_id,'"+thumb.path+"'),"
     });
 
-    
-
-   
+  
     strQuery = strQuery.split(''); 
     strQuery.splice(strQuery.lastIndexOf(','),1,';');  //hack para la ultima coma convertirla en punto y coma
     strQuery = strQuery.join(''); 
     db.query(strQuery, function(err,result) {
         if(!err){   
-            console.log(result[0]);
-            mediaData.id = result[0].info.insertId
-        
+            mediaData.id = result[0].info.insertId      
         }
         else{
             mediaData = null;
