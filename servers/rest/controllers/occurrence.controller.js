@@ -106,4 +106,16 @@ occurrenceController.delete = function (req, res) {
     });
 };
 
+occurrenceController.deleteById = function (req, res) {
+    
+        occurrenceDao.delete(req.params.id, function (err) {
+    
+            if (err)
+                return res.status(500).send(err.message+"gato pardo");
+    
+            res.status(200).jsonp(true);
+    
+        });
+    };
+
 module.exports = occurrenceController;
