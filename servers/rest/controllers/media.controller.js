@@ -52,9 +52,12 @@ mediaController.update = function(req, res) {
         frameRate: req.body.fps,
         frameCount: req.body.frames,
         resolution: req.body.resolution,
-        path: req.body.path
+        path: req.body.path,
+        provider: req.body.provider
 
 	};
+
+
 
     mediaDao.update(media, function(err, result) {
 
@@ -80,8 +83,10 @@ mediaController.insert = function(req, res) {
         frameCount: req.body.frameCount,
         resolution: req.body.resolution,
         path: req.body.path,
-        thumbnails: req.body.thumbnails
+        thumbnails: req.body.thumbnails,
+        provider: req.body.provider
 	};
+
 
     mediaDao.insert(media, function(err, result) {
 
