@@ -5,6 +5,7 @@ var morgan = require('morgan');
 var mediaController = require("./controllers/media.controller");
 var pieceController = require("./controllers/piece.controller");
 var occurrenceController = require("./controllers/occurrence.controller");
+var filterArgsController = require("./controllers/filterArgs.controller");
 var config = require("../../config.js");
 var routes = require('./routes');
 var fs = require('fs');
@@ -44,7 +45,8 @@ app.all('/*', function(req, res, next) {
 var controllers = {
   media : mediaController,
   piece : pieceController,
-  occurrence : occurrenceController
+  occurrence : occurrenceController,
+  filterArgs : filterArgsController
   /** 
    * ...
    * Aca van todos los controlers 

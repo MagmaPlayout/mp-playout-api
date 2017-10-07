@@ -27,6 +27,9 @@ function setup(app, controllers) {
     app.post('/api/occurrences', controllers.occurrence.insert);
 	app.delete('/api/occurrences', controllers.occurrence.delete);
 	
+	// FilterArgs API
+	app.get('/api/filterArgs', controllers.filterArgs.listAll);
+	app.get('/api/filterArgs/:id', controllers.filterArgs.getById);
 }
 
 exports.setup = setup;
