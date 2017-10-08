@@ -10,6 +10,7 @@ function setup(app, controllers) {
 	app.delete('/api/medias/:id', controllers.media.delete);
 	app.get('/api/medias/name/:name', controllers.media.getByName);
 	app.get('/api/medias/path/:pathlist', controllers.media.getByPathList);
+	app.get('/api/medias/ids/:ids', controllers.media.getByMediaIdList);
 	
 	//pieces api
 	app.get('/api/pieces/:id', controllers.piece.getById);

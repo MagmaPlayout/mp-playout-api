@@ -115,10 +115,22 @@ mediaDao.getByPathList = function(pathList,callback)
 {
    
 	 var whereClause = "path IN ("+
-                        (pathList.map(function(item) { return '?' })).join(",")
+                        (pathList.map(function(item) { return item })).join(",")
                         +")";
 
      mapMediaObject(whereClause,callback);
+}
+
+/**
+ * find media by mediaId list
+ */
+mediaDao.getByMediaIdList = function(mediaIdList,callback)
+{
+   
+    var whereClause = "m.id IN ("+
+                        (mediaIdList.map(function(item) { return item })).join(",")
+                        +") ";
+    mapMediaObject(whereClause,callback);
 }
 
 
@@ -135,7 +147,7 @@ var mapMediaObject = function(whereClause, callback){
                     "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path " +
                 "FROM Media m " +
                     "LEFT JOIN MediaInfo mi ON m.id = mi.mediaId "+
-                    "LEFT JOIN Thumbnail t ON t.mediaId = m.id" +
+                    "LEFT JOIN Thumbnail t ON t.mediaId = m.id " +
                 (whereClause == null  ? "" : "WHERE " + whereClause) 
                 
 

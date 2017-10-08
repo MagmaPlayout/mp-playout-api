@@ -147,4 +147,21 @@ mediaController.getByPathList= function(req, res){
      
 }
 
+/**
+ * GET - find medias by mediaId list
+ */
+mediaController.getByMediaIdList = function(req, res){
+   
+    var mediaIdList = JSON.parse(req.params.ids);
+    
+    mediaDao.getByMediaIdList(mediaIdList, function(err, result) {
+       
+        if(err) 
+            return res.status(500).send(err.message);
+    
+        res.status(200).jsonp(result);
+
+    });
+     
+}
 module.exports = mediaController;
