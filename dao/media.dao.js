@@ -100,10 +100,8 @@ mediaDao.delete = function(id)
  * find media by name
  */
 mediaDao.getByName = function(name,callback)
-{
-	
-    var whereClause = "name = " + name;
-
+{	
+    var whereClause = "name = '" + name + "'";  
     mapMediaObject(whereClause,callback);
 }
 
