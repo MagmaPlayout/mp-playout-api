@@ -117,4 +117,17 @@ pieceController.getByPathList= function(req, res){
      
 }
 
+/**
+ * GET - Returns a list of pieces that don't have a filter.
+ */
+pieceController.getAllWithOutFilter = function(req, res){
+    pieceDao.getAllWithOutFilter(function(err, result) {
+        if(err) {
+            return res.send(500, err.message);
+        }
+     
+        res.status(200).jsonp(result);
+    });
+}
+
 module.exports = pieceController;

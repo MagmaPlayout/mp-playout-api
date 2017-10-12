@@ -1,3 +1,7 @@
 # dependencies
 /node_modules
 config.js
+
+# netbeans
+/nbproject/private/
+/nbproject/*
