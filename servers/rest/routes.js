@@ -15,6 +15,7 @@ function setup(app, controllers) {
 	//pieces api
 	app.get('/api/pieces/:id', controllers.piece.getById);
     app.get('/api/pieces', controllers.piece.listAll);
+        app.get('/api/pieceswofilter', controllers.piece.getAllWithOutFilter);
 	app.put('/api/pieces/:id', controllers.piece.update);
     app.post('/api/pieces', controllers.piece.insert);
 	app.delete('/api/pieces/:id', controllers.piece.delete);

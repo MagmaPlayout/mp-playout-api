@@ -239,8 +239,21 @@ var mapPieceObject = function(whereClause, callback){
     });
 
     db.end();
-
-
 }
+
+
+/**
+ * Get all pieces that don't have a filter
+ */
+pieceDao.getAllWithOutFilter = function (callback) {
+    db.query("SELECT * FROM Piece WHERE filterId IS NULL",
+        function (err, rows) {
+            callback(err, rows);
+        }
+    );
+
+    db.end();
+};
+
 
 module.exports = pieceDao;
