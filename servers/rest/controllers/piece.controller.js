@@ -96,12 +96,13 @@ pieceController.delete = function(req, res) {
                 });
             }
             else{
-                console.log("filterId is null")
+                console.log("The FilterId is null");
+                return res.status(500).send(piece.name + " media could not be deleted");
             }
         }
         else{
             console.log("The piece not exist")
-            res.status(500).jsonp(false);
+            return res.status(500).send("The piece not exist");
         }
 
     });   
