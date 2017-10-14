@@ -81,10 +81,11 @@ pieceController.insert = function(req, res) {
  */
 pieceController.delete = function(req, res) { 
     var pieceId = req.params.id;
-    
+
     pieceDao.getById(pieceId,function(err, piece){
+        console.log(piece);
         if(piece!=null){
-            if(piece.filterId == null){
+            if(piece.filterId != null){
                 pieceDao.delete(pieceId, function (err) {
 
                     if (err)
