@@ -80,8 +80,31 @@ pieceController.insert = function(req, res) {
  * DEL - Delete a piece with specified ID
  */
 pieceController.delete = function(req, res) { 
+    var pieceId = req.params.id;
+    
+    pieceDao.getById(pieceId,function(err, piece){
+        if(piece!=null){
+            if(piece.filterId == null){
+                pieceDao.delete(pieceId, function (err) {
 
-   res.send(500, "Not implemented");
+                    if (err)
+                        return res.status(500).send(err.message);
+
+                    res.status(200).jsonp(true);
+
+                });
+            }
+            else{
+                console.log("filterId is null")
+            }
+        }
+        else{
+            console.log("The piece not exist")
+            res.status(500).jsonp(false);
+        }
+
+    });   
+     
 };
 
 /**

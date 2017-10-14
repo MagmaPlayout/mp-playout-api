@@ -83,9 +83,20 @@ pieceDao.insert = function(pieceData, callback)
  * delete a piece (Not implemented)
  * 
  */
-pieceDao.delete = function(id)
+pieceDao.delete = function(id, callback)
 {
-	return null;
+    console.log(id);
+	db.query("DELETE FROM Piece WHERE id = :id",
+                {
+                   id : id
+                }, 
+                function(err, result) {
+                    console.log(result);
+                    callback(err, result);
+                }
+    );
+    
+    db.end();
 }
 
 

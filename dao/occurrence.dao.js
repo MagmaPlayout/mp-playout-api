@@ -89,7 +89,6 @@ occurrenceDao.listAll = function(callback)
  */
 occurrenceDao.update= function(occurrenceData,callback)
 {
-    console.log(occurrenceData);
 	 db.query("UPDATE Occurrence SET playlistId = :playlistId,"+ 
                     "pieceId = :pieceId, startDateTime = :startDateTime, filterId = :filterId " +
                 "WHERE id = :id",
