@@ -20,7 +20,6 @@ function setup(app, controllers) {
     app.post('/api/pieces', controllers.piece.insert);
 	app.delete('/api/pieces/:id', controllers.piece.delete);
 	app.get('/api/pieces/name/:name', controllers.piece.getByName);
-	app.get('/api/pieces/path/:pathlist', controllers.piece.getByPathList);
 
 	//occurrence api
 	app.get('/api/occurrences/:id', controllers.occurrence.getById);

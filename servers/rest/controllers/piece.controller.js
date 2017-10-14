@@ -125,24 +125,6 @@ pieceController.getByName= function(req, res){
 }
 
 /**
- * GET - find pieces by path list
- */
-pieceController.getByPathList= function(req, res){
-
-    var pathList = JSON.parse(req.params.pathlist);
-  
-    pieceDao.getByPathList(pathList, function(err, result) {
-       
-        if(err) 
-            return res.send(500, err.message);
-    
-        res.status(200).jsonp(result);
-
-    });
-     
-}
-
-/**
  * GET - Returns a list of pieces that don't have a filter.
  */
 pieceController.getAllWithOutFilter = function(req, res){

@@ -80,7 +80,7 @@ pieceDao.insert = function(pieceData, callback)
 
 
 /**
- * delete a piece (Not implemented)
+ * delete a piece
  * 
  */
 pieceDao.delete = function(id, callback)
@@ -111,23 +111,6 @@ pieceDao.getByName = function(name,callback)
 
     mapPieceObject(whereClause,callback);
 }
-
-
-/**
- * find piece by path list
- * @param {List<string>} pathList 
- */
-pieceDao.getByPathList = function(pathList,callback)
-{
-    db.query("SELECT * FROM Piece WHERE path IN ("+
-                        (pathList.map(function(item) { return '?' })).join(",")
-                        +")",
-            function(err, rows) {
-                callback(err, rows);
-    });
-
-}
-
 
 /**
  * Private method
