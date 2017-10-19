@@ -11,6 +11,9 @@ function setup(app, controllers) {
 	app.get('/api/medias/name/:name', controllers.media.getByName);
 	app.get('/api/medias/path/:pathlist', controllers.media.getByPathList);
 	app.get('/api/medias/ids/:ids', controllers.media.getByMediaIdList);
+
+	//thumbnails api
+	app.post('/api/thumbnails', controllers.thumbnails.insert);
 	
 	//pieces api
 	app.get('/api/pieces/:id', controllers.piece.getById);

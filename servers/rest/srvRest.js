@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mediaController = require("./controllers/media.controller");
+var thumbnailsController = require("./controllers/thumbnails.controller");
 var pieceController = require("./controllers/piece.controller");
 var occurrenceController = require("./controllers/occurrence.controller");
 var filterArgsController = require("./controllers/filterArgs.controller");
@@ -45,6 +46,7 @@ app.all('/*', function(req, res, next) {
 var controllers = {
   media : mediaController,
   piece : pieceController,
+  thumbnails : thumbnailsController,
   occurrence : occurrenceController,
   filterArgs : filterArgsController
   /** 
