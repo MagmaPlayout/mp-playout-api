@@ -53,7 +53,7 @@ mediaController.update = function(req, res) {
         frameCount: req.body.frames,
         resolution: req.body.resolution,
         path: req.body.path,
-        provider: req.body.provider
+        supplier: req.body.supplier
 
 	};
 
@@ -84,7 +84,7 @@ mediaController.insert = function(req, res) {
         resolution: req.body.resolution,
         path: req.body.path,
         thumbnails: req.body.thumbnails,
-        provider: req.body.provider
+        supplier: req.body.supplier
 	};
 
 

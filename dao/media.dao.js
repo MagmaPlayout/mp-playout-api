@@ -50,14 +50,14 @@ mediaDao.insert = function(mediaData, callback)
 {
     mediaData.thumbnails = []
     var strQuery = 
-                "INSERT INTO Media (duration, name, frameRate, path, frameCount, description, resolution, provider) VALUES ('"+mediaData.duration+"',"+
+                "INSERT INTO Media (duration, name, frameRate, path, frameCount, description, resolution, supplier) VALUES ('"+mediaData.duration+"',"+
                                                                                                                     " '"+mediaData.name+"',"+
                                                                                                                     " '"+mediaData.frameRate+"',"+
                                                                                                                     " '"+mediaData.path+"',"+
                                                                                                                     " '"+mediaData.frameCount+"',"+
                                                                                                                     " '"+mediaData.description+"',"+
                                                                                                                     " '"+mediaData.resolution+"',"+
-                                                                                                                    " '"+mediaData.provider+"');";  
+                                                                                                                    " '"+mediaData.supplier+"');";  
     strQuery = strQuery+"SET @last_media_id = LAST_INSERT_ID();";
     strQuery = strQuery+"INSERT INTO Thumbnail (mediaId, path) VALUES ";                                                                                                                    
     mediaData.thumbnails.forEach(thumb => {
