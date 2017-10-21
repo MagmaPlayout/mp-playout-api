@@ -7,6 +7,7 @@ var thumbnailsController = require("./controllers/thumbnails.controller");
 var pieceController = require("./controllers/piece.controller");
 var occurrenceController = require("./controllers/occurrence.controller");
 var filterArgsController = require("./controllers/filterArgs.controller");
+var tagController = require("./controllers/tag.controller");
 var config = require("../../config.js");
 var routes = require('./routes');
 var fs = require('fs');
@@ -41,14 +42,13 @@ app.all('/*', function(req, res, next) {
 });
 
 
-
-
 var controllers = {
   media : mediaController,
   piece : pieceController,
   thumbnails : thumbnailsController,
   occurrence : occurrenceController,
-  filterArgs : filterArgsController
+  filterArgs : filterArgsController,
+  tag : tagController
   /** 
    * ...
    * Aca van todos los controlers 

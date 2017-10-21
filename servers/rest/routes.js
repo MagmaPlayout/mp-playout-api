@@ -34,6 +34,11 @@ function setup(app, controllers) {
 	// FilterArgs API
 	app.get('/api/filterArgs', controllers.filterArgs.listAll);
 	app.get('/api/filterArgs/:id', controllers.filterArgs.getById);
+
+    //tag api
+	app.get('/api/tags', controllers.tag.listAll);
+    app.post('/api/tags', controllers.tag.insert);
+	
 }
 
 exports.setup = setup;
