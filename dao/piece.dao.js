@@ -49,8 +49,8 @@ pieceDao.update= function(pieceData)
 pieceDao.insert = function(pieceData, callback)
 {
      db.query(
-                "INSERT INTO Piece (name, mediaId, resolution, duration, path, filterId, frameCount, frameRate) "+
-                "VALUES (:name,:mediaId,:resolution,:duration,:path,:filterId,:frameCount,:frameRate) ",
+                "INSERT INTO Piece (name, mediaId, resolution, duration, path, frameCount, frameRate) "+
+                "VALUES (:name,:mediaId,:resolution,:duration,:path,:frameCount,:frameRate) ",
               
                 {
                     name : pieceData.name, 
@@ -58,7 +58,6 @@ pieceDao.insert = function(pieceData, callback)
                     resolution : pieceData.resolution,
                     duration : pieceData.duration,
                     path : pieceData.path,
-                    filterId : pieceData.filterId,
                     frameCount : pieceData.frameCount,
                     frameRate : pieceData.frameRate
                 }              
@@ -240,7 +239,27 @@ var mapPieceObject = function(whereClause, callback){
  * Get all pieces that don't have a filter
  */
 pieceDao.getAllWithOutFilter = function (callback) {
-    db.query("SELECT * FROM Piece WHERE filterId IS NULL",
+    db.query("SELECT DISTINCT p.* " +
+                "FROM Piece p" + 
+                "LEFT JOIN FilterConfig fc ON fc.pieceId = p.id "+
+                "WHERE fc.id IS NULL",
+        function (err, rows) {
+            callback(err, rows);
+        }
+    );
+
+    db.end();
+};
+
+/**
+ * Get all pieces that don't have a filter
+ */
+pieceDao.getByIdWithOutFilter = function (id, callback) {
+    db.query("SELECT DISTINCT p.* " +
+                "FROM Piece p" + 
+                "LEFT JOIN FilterConfig fc ON fc.pieceId = p.id "+
+                "WHERE p.id = ? AND fc.id IS NULL",
+                [id],
         function (err, rows) {
             callback(err, rows);
         }

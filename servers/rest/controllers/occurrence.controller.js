@@ -9,7 +9,7 @@ var occurrenceController = {};
 
 /**
  * GET - Return a occurrence with specified ID
- * @return {Occurrence}
+ * @return {OccurrenceModel}
  */
 occurrenceController.getById = function(req, res) { 
   
@@ -26,7 +26,7 @@ occurrenceController.getById = function(req, res) {
 
 /**
  * GET - Return all occurrences
- * @returns {List<Occurrence>}
+ * @returns {List<OccurrenceModel>}
  */
 occurrenceController.listAll = function(req, res) { 
     
@@ -51,8 +51,7 @@ occurrenceController.update = function(req, res) {
         id: req.body.id,
 		playlistId: req.body.playlistId,
 		pieceId: req.body.pieceId,
-        startDateTime: req.body.startDateTime,
-		filterId: req.body.filerId,     
+        startDateTime: req.body.startDateTime
 	};
 
     occurrenceDao.update(occurrence, function(err,result) {
@@ -68,15 +67,14 @@ occurrenceController.update = function(req, res) {
 
 /**
  * POST - Create a new occurrence
- * @returns {Occurrence} last inserted
+ * @returns {OccurrenceModel} last inserted
  */
 occurrenceController.insert = function(req, res) { 
     
 	var ocurrence = {
 		playlistId: req.body.playlistId,
 		pieceId: req.body.pieceId,
-        startDateTime: req.body.startDateTime,
-		filterId: req.body.filerId,     
+        startDateTime: req.body.startDateTime
 	};
 
     occurrenceDao.insert(ocurrence, function(err, result) {

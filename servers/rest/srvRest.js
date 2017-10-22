@@ -8,6 +8,7 @@ var pieceController = require("./controllers/piece.controller");
 var occurrenceController = require("./controllers/occurrence.controller");
 var filterArgsController = require("./controllers/filterArgs.controller");
 var tagController = require("./controllers/tag.controller");
+var filterController = require("./controllers/filter.controller");
 var config = require("../../config.js");
 var routes = require('./routes');
 var fs = require('fs');
@@ -48,7 +49,8 @@ var controllers = {
   thumbnails : thumbnailsController,
   occurrence : occurrenceController,
   filterArgs : filterArgsController,
-  tag : tagController
+  tag : tagController,
+  filter : filterController
   /** 
    * ...
    * Aca van todos los controlers 

@@ -26,7 +26,6 @@ occurrenceDao.getById = function(id,callback)
                         playlistId : item.playlistId, 
                         pieceId : item.pieceId, 
                         startDateTime : item.startDateTime,
-                        filterId : item.filterId,
                         piece : {
                             id : item.pieceId,
                             name : item.name,
@@ -62,7 +61,6 @@ occurrenceDao.listAll = function(callback)
                         playlistId : item.playlistId, 
                         pieceId : item.pieceId, 
                         startDateTime : item.startDateTime,
-                        filterId : item.filterId,
                         piece : {
                             id : item.pieceId,
                             name : item.name,
@@ -90,13 +88,12 @@ occurrenceDao.listAll = function(callback)
 occurrenceDao.update= function(occurrenceData,callback)
 {
 	 db.query("UPDATE Occurrence SET playlistId = :playlistId,"+ 
-                    "pieceId = :pieceId, startDateTime = :startDateTime, filterId = :filterId " +
+                    "pieceId = :pieceId, startDateTime = :startDateTime " +
                 "WHERE id = :id",
                 {
                     playlistId : occurrenceData.playlistId, 
                     pieceId : occurrenceData.pieceId, 
                     startDateTime : occurrenceData.startDateTime,
-                    filterId : occurrenceData.filterId,
                     id : parseInt(occurrenceData.id)
                 }, 
                 function(err, result) {
@@ -111,20 +108,19 @@ occurrenceDao.update= function(occurrenceData,callback)
 
 /**
  * insert new occurrence
- * @returns {Ocurrence} last inserted
+ * @returns {OcurrenceModel} last inserted
  */
 occurrenceDao.insert = function(occurrenceData, callback)
 {
 
     db.query(
-                "INSERT INTO Occurrence (playlistId, pieceId, startDateTime, filterId) "+
-                "VALUES (:playlistId,:pieceId,:startDateTime,:filterId) ",
+                "INSERT INTO Occurrence (playlistId, pieceId, startDateTime) "+
+                "VALUES (:playlistId,:pieceId,:startDateTime) ",
               
                 {
                     playlistId : occurrenceData.playlistId, 
                     pieceId : occurrenceData.pieceId, 
-                    startDateTime : occurrenceData.startDateTime,
-                    filterId : occurrenceData.filterId
+                    startDateTime : occurrenceData.startDateTime
                 }              
                 , 
                 function(err,result) {  

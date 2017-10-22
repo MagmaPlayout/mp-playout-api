@@ -60,7 +60,6 @@ pieceController.insert = function(req, res) {
         resolution : req.body.resolution,
         duration : req.body.duration,
         path : req.body.path,
-        filterId : req.body.filterId,
         frameCount : req.body.frameCount,
         frameRate : req.body.frameRate     
 	};
@@ -81,28 +80,24 @@ pieceController.insert = function(req, res) {
  */
 pieceController.delete = function(req, res) { 
     var pieceId = req.params.id;
-
-    pieceDao.getById(pieceId,function(err, piece){
+  
+    pieceDao.getByIdWithOutFilter(pieceId,function(err, piece){
         console.log(piece);
-        if(piece!=null){
-            if(piece.filterId != null){
-                pieceDao.delete(pieceId, function (err) {
+        if(piece != null){
+            
+            pieceDao.delete(pieceId, function (err) {
 
-                    if (err)
-                        return res.status(500).send(err.message);
+                if (err)
+                    return res.status(500).send(err.message);
 
-                    res.status(200).jsonp(true);
+                res.status(200).jsonp(true);
 
-                });
-            }
-            else{
-                console.log("The FilterId is null");
-                return res.status(500).send(piece.name + " media could not be deleted");
-            }
+            });
+            
         }
         else{
-            console.log("The piece not exist")
-            return res.status(500).send("The piece not exist");
+            console.log("The piece could not be deleted, has filters.");
+            return res.status(500).send("the media could not be deleted");
         }
 
     });   

@@ -23,8 +23,7 @@ filterArgsDao.getById = function(id,callback) {
 					return {
 						id: item.id,
 						filterId: item.filterId,
-						key: item.key,
-						value: item.value
+						key: item.key
 					}
 				});
 			}
@@ -49,8 +48,7 @@ filterArgsDao.listAll = function(callback) {
                     return {
                         id: item.id,
                         filterId: item.filterId,
-                        key: item.key,
-                        value: item.value
+                        key: item.key                      
                     }
                 });
             }
@@ -68,11 +66,9 @@ filterArgsDao.update= function(filterArgsData,callback) {
     db.query(
         " UPDATE FilterArgs "+
         " SET key = :key, "+
-        " value = :value " +
         " WHERE id = :id",
         {
             key : filterArgsData.key,
-            value : filterArgsData.value,
             id : parseInt(filterArgsData.id)
         },
         function(err, result) {
@@ -90,12 +86,11 @@ filterArgsDao.update= function(filterArgsData,callback) {
  */
 filterArgsDao.insert = function(filterArgsData, callback) {
     db.query(
-        " INSERT INTO FilterArgs (filterId, key, value) "+
-        " VALUES (:filterId, :key, :value) ",
+        " INSERT INTO FilterArgs (filterId, key) "+
+        " VALUES (:filterId, :key) ",
         {
             filterId : filterArgsData.filterId,
-            key : filterArgsData.key,
-            value : filterArgsData.value
+            key : filterArgsData.key
         },
         function(err,result) {
             filterArgsData = null;

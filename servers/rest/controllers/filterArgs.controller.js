@@ -44,8 +44,7 @@ filterArgsController.update = function(req, res) {
     var filterArg = {
         id: req.body.id,
         filterId: req.body.filerId,     
-		key: req.body.key,
-		value: req.body.value
+		key: req.body.key
 	};
 
     filterArgsDao.update(occurrence, function(err,result) {
@@ -66,8 +65,7 @@ filterArgsController.insert = function(req, res) {
     var filterArg = {
         id: req.body.id,
         filterId: req.body.filerId,     
-		key: req.body.key,
-		value: req.body.value
+		key: req.body.key
 	};
 
     filterArgsDao.insert(ocurrence, function(err, result) {
