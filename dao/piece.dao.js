@@ -48,9 +48,36 @@ pieceDao.update= function(pieceData)
  */
 pieceDao.insert = function(pieceData, callback)
 {
-     db.query(
-                "INSERT INTO Piece (name, mediaId, resolution, duration, path, frameCount, frameRate) "+
-                "VALUES (:name,:mediaId,:resolution,:duration,:path,:frameCount,:frameRate) ",
+    var strQuery = "START TRANSACTION;"+
+                    "INSERT INTO Piece (name, mediaId, resolution, duration, path, frameCount, frameRate) "+
+                    "VALUES (:name,:mediaId,:resolution,:duration,:path,:frameCount,:frameRate); ",
+    strQuery = strQuery + "SET @lastInsertedId = LAST_INSERT_ID();  "
+    
+    //guardo todos los tags del piece
+    if(pieceData.tagList.length > 0 ){
+        strQuery = strQuery+"INSERT INTO TagPieces (pieceId, tagId) VALUES ";                                                                                                                    
+        pieceData.tagList.forEach(tag => {
+            strQuery = strQuery + "(@lastInsertedId,'"+ tag.id +"'),"
+        });
+        strQuery = strQuery+ "; ";
+
+    }
+   
+    //guardo todos los filters del piece
+    console.log(pieceData.filterList.length)
+    if(pieceData.filterList.length > 0 ){
+        strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";                                                                                                                    
+        pieceData.filterList.forEach(filter => {
+            strQuery = strQuery + "(@lastInsertedId,'"+ filter.id +"', 1, 0, 0)," // TO-DO: corregir hardcodeo
+        });
+        strQuery = strQuery + "; ";
+    }
+
+    strQuery = strQuery + "COMMIT;";
+    strQuery = strQuery.replace("),;", ");");
+    strQuery = strQuery.replace("),;", ");");
+
+    db.query( strQuery,
               
                 {
                     name : pieceData.name, 
@@ -62,14 +89,13 @@ pieceDao.insert = function(pieceData, callback)
                     frameRate : pieceData.frameRate
                 }              
                 , 
-                function(err,result) {
+                function(err,result) {  
                     if(!err){
-                        pieceData.id = result.info.insertId
-                    }
+                        pieceData.id = result[1].info.insertId
+                    }                                                 
                     else{
                         pieceData = null;
-                    }                                                   
-                    
+                    }
                     callback(err,pieceData);
                 }
     );
@@ -84,11 +110,20 @@ pieceDao.insert = function(pieceData, callback)
  */
 pieceDao.delete = function(id, callback)
 {
-    console.log(id);
-	db.query("DELETE FROM Piece WHERE id = :id",
-                {
-                   id : id
-                }, 
+    var strQuery = "START TRANSACTION;";
+    
+    //elimino todos sus tags
+    strQuery = strQuery+"DELETE FROM TagPieces WHERE pieceId = " + id +"; " 
+
+     //elimino todos sus filtros configurados
+    strQuery = strQuery+"DELETE FROM FilterConfig WHERE pieceId = " + id +"; " 
+
+    strQuery = strQuery + "DELETE FROM Piece WHERE id =" + id + "; ";    
+    
+    strQuery = strQuery + "COMMIT;";
+    
+
+	db.query(strQuery, 
                 function(err, result) {
                     console.log(result);
                     callback(err, result);
@@ -129,7 +164,8 @@ var mapPieceObject = function(whereClause, callback){
                     "INNER JOIN Media m ON m.id = p.mediaId "+
                     "LEFT JOIN MediaInfo mi ON mi.mediaId = p.mediaId "+
                     "LEFT JOIN Thumbnail t ON t.mediaId = p.mediaId "+
-                (whereClause == null  ? "" : "WHERE " + whereClause) 
+                (whereClause == null  ? "" : "WHERE " + whereClause) +
+                " ORDER BY p.name "
                 
 
     var pieceList = [];
@@ -252,16 +288,18 @@ pieceDao.getAllWithOutFilter = function (callback) {
 };
 
 /**
- * Get all pieces that don't have a filter
+ * Check if piece has filters
  */
-pieceDao.getByIdWithOutFilter = function (id, callback) {
+pieceDao.hasFilter = function (id, callback) {
     db.query("SELECT DISTINCT p.* " +
-                "FROM Piece p" + 
+                "FROM Piece p " + 
                 "LEFT JOIN FilterConfig fc ON fc.pieceId = p.id "+
                 "WHERE p.id = ? AND fc.id IS NULL",
                 [id],
         function (err, rows) {
-            callback(err, rows);
+            console.log(err);
+            console.log(rows);
+            callback(err, rows.length > 0 ? false : true);
         }
     );
 

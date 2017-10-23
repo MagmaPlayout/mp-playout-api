@@ -53,7 +53,7 @@ pieceController.update = function(req, res) {
  * POST - Create a new piece
  */
 pieceController.insert = function(req, res) { 
-   
+  
 	var piece = {
 		name : req.body.name, 
         mediaId : req.body.mediaId, 
@@ -61,7 +61,9 @@ pieceController.insert = function(req, res) {
         duration : req.body.duration,
         path : req.body.path,
         frameCount : req.body.frameCount,
-        frameRate : req.body.frameRate     
+        frameRate : req.body.frameRate,
+        filterList : req.body.filterList == null ? [] : JSON.parse(req.body.filterList),
+        tagList : req.body.tagList == null ? [] : JSON.parse(req.body.tagList)    
 	};
 
     pieceDao.insert(piece, function(err, result) {
@@ -81,9 +83,8 @@ pieceController.insert = function(req, res) {
 pieceController.delete = function(req, res) { 
     var pieceId = req.params.id;
   
-    pieceDao.getByIdWithOutFilter(pieceId,function(err, piece){
-        console.log(piece);
-        if(piece != null){
+    pieceDao.hasFilter(pieceId,function(err, resp){
+        if(resp){
             
             pieceDao.delete(pieceId, function (err) {
 
