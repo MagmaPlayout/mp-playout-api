@@ -68,7 +68,7 @@ pieceDao.insert = function(pieceData, callback)
     if(pieceData.filterList.length > 0 ){
         strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";                                                                                                                    
         pieceData.filterList.forEach(filter => {
-            strQuery = strQuery + "(@lastInsertedId,'"+ filter.id +"', 1, 0, 0)," // TO-DO: corregir hardcodeo
+            strQuery = strQuery + "(@lastInsertedId,'"+ filter.id +"', 1, 1, 'filterArgId hardcodeado')," // TO-DO: corregir hardcodeo
         });
         strQuery = strQuery + "; ";
     }
@@ -89,7 +89,9 @@ pieceDao.insert = function(pieceData, callback)
                     frameRate : pieceData.frameRate
                 }              
                 , 
-                function(err,result) {  
+                function(err,result) { 
+                    console.log(err);
+                    console.log(result); 
                     if(!err){
                         pieceData.id = result[1].info.insertId
                     }                                                 
