@@ -12,14 +12,10 @@ var pieceDao = {}
  */
 pieceDao.getById = function(id,callback)
 {
-
-	db.query("SELECT * FROM Piece WHERE id= ?",
-            [id],
-            function(err, rows) {
-                callback(err, rows[0]);
-    });
-
-    db.end();
+    var whereClause = " p.id = " + id;
+    
+    mapPieceObject(whereClause, callback);
+	
 }
 
 
@@ -35,11 +31,44 @@ pieceDao.listAll = function(callback)
 
 
 /**
- * insert new piece
+ * update a piece
  */
 pieceDao.update= function(pieceData)
 {
-	return null;
+    var pieceOld = pieceDao.getById(pieceData.id);
+	var strQuery = "START TRANSACTION;"+
+                    "UPDATE Piece  SET name = :name "+
+                    "WHERE id = :id ";
+     
+     //si hubo cambios en la lista de tags
+    if(pieceData.tagList != pieceData.tagList){
+        strQuery = strQuery + "DELETE FROM TagPieces WHERE pieceId =" + pieceData.id + "; ";
+        strQuery = strQuery+"INSERT INTO TagPieces (pieceId, tagId) VALUES ";                                                                                                                    
+        pieceData.tagList.forEach(tag => {
+            strQuery =  strQuery + "(" + pieceData.id + ", " + tag.id +"'),"
+        });
+        strQuery = strQuery+ "; ";
+
+    }
+
+    //si hubo cambios en la lista de filterConfig
+    if(pieceData.filterConfigList != pieceOld.filterConfigList){
+        strQuery = strQuery + "DELETE FROM FilterConfig WHERE pieceId =" + pieceData.id + "; ";
+        strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";    
+        pieceData.filterConfigList.forEach(filConfig => {
+            strQuery = strQuery + "(" + pieceData.id + ", "+ filConfig.filterId +"', 1, 'filterArgId hardcodeado', 1 )," // TO-DO: corregir hardcodeo
+        });
+    }
+    strQuery = strQuery + ""
+    db.query( strQuery,
+                pieceData             
+                , 
+                function(err, result) { 
+                    callback(err, result);
+                }
+    );
+    
+    db.end();
 }
 
 
@@ -64,11 +93,10 @@ pieceDao.insert = function(pieceData, callback)
     }
    
     //guardo todos los filters del piece
-    console.log(pieceData.filterList.length)
-    if(pieceData.filterList.length > 0 ){
+    if(pieceData.filterConfigList.length > 0 ){
         strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";                                                                                                                    
-        pieceData.filterList.forEach(filter => {
-            strQuery = strQuery + "(@lastInsertedId,'"+ filter.id +"', 1, 1, 'filterArgId hardcodeado')," // TO-DO: corregir hardcodeo
+        pieceData.filterConfigList.forEach(filConfig => {
+            strQuery = strQuery + "(@lastInsertedId,'"+ filConfig.filterId +"', 1, 'filterArgId hardcodeado', 1 )," // TO-DO: corregir hardcodeo
         });
         strQuery = strQuery + "; ";
     }
@@ -89,11 +117,9 @@ pieceDao.insert = function(pieceData, callback)
                     frameRate : pieceData.frameRate
                 }              
                 , 
-                function(err,result) { 
-                    console.log(err);
-                    console.log(result); 
-                    if(!err){
-                        pieceData.id = result[1].info.insertId
+                function(err, result) { 
+                    if(!err && result[1].info.affectedRows > 0 ){
+                        pieceData.id = result[1].info.insertId; 
                     }                                                 
                     else{
                         pieceData = null;
@@ -156,17 +182,26 @@ pieceDao.getByName = function(name,callback)
 // es lo unico que se me ocurree por ahora (es medio cabeza)
 var mapPieceObject = function(whereClause, callback){ 
    
+   //to-do -> mapear filterArgs
     var query = "SELECT	m.*,"+
                     "p.id AS p_id,p.name AS p_name, p.duration AS p_duration, p.path AS p_path,"+
                     "p.resolution AS p_resolution, p.mediaId AS p_mediaId,"+
                     "p.frameRate AS p_frameRate, p.frameCount AS p_frameCount,"+
                     "mi.id AS mi_id, mi.mediaId AS mi_mediaId, mi.key, mi.value,"+
-                    "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path "+
+                    "t.id AS t_id, t.mediaId AS t_mediaId, t.path AS t_path, "+
+                    "fc.id AS fc_id, fc.filterId AS fc_filterId, fc.pieceId AS fc_pieceId, fc.filterArgId, fc.value AS fc_value, fc.filterIndex, " +
+                    "fil.id AS fil_id, fil.name AS fil_name, fil.description AS fil_description, " + 
+                    "tp.id AS tp_id, tp.pieceId AS tp_pieceId, tp.tagId AS tp_tagId, " +
+                    "tag.id AS tag_id, tag.tag " +
                 "FROM Piece p "+
                     "INNER JOIN Media m ON m.id = p.mediaId "+
                     "LEFT JOIN MediaInfo mi ON mi.mediaId = p.mediaId "+
                     "LEFT JOIN Thumbnail t ON t.mediaId = p.mediaId "+
-                (whereClause == null  ? "" : "WHERE " + whereClause) +
+                    "LEFT JOIN TagPieces tp ON tp.pieceId = p.id " +
+					"LEFT JOIN Tags tag ON tag.id = tp.tagId " +
+                    "LEFT JOIN FilterConfig fc ON fc.pieceId = p.id " +
+					"LEFT JOIN Filter fil ON fil.id = fc.filterId "+
+                (whereClause == null  ? "" : " WHERE " + whereClause) +
                 " ORDER BY p.name "
                 
 
@@ -174,6 +209,8 @@ var mapPieceObject = function(whereClause, callback){
     var mediaList = [];
     var thumbnailList = [];
     var mediaInfoList = [];
+    var tagList = [];
+    var filterConfigList = [];
 
 	db.query(query,
             function(err, rows) {
@@ -189,7 +226,9 @@ var mapPieceObject = function(whereClause, callback){
                         frameRate : item.p_frameRate,
                         frameCount : item.p_frameCount,
                         mediaId : item.p_mediaId,                       
-                        media : null                       
+                        media : null,
+                        tagList : [],
+                        filterConfigList : []                     
                     }
                 });
                 
@@ -231,7 +270,39 @@ var mapPieceObject = function(whereClause, callback){
                         mediaId : item.mi_mediaId
                     }
                 });
+
+                //keep only unique tag object
+                tagList = _.unique(rows,"tp_id").map(function(item){
+                   
+                    return {
+                        id : item.tag_id,
+                        tag: item.tag,
+                        pieceId : item.tp_pieceId
+                    }
+                });
+
+                //keep only unique tag object
+                filterConfigList = _.unique(rows,"fc_id").map(function(item){
+                   
+                    return {
+                        id : item.fc_id,
+                        filterId: item.fc_filterId,
+                        pieceId : item.fc_pieceId,
+                        filterArgId : item.filterArgId,
+                        value : item.fil_value,
+                        filterIndex : item.filterIndex,
+                        filter : {
+                            id : item.fil_id,
+                            name : item.fil_name,
+                            description : item.fil_description
+                            //to-do -> falta lista de FilterArg
+                        }
+                       
+
+                    }
+                });
                
+                
                 //get thumbnails for each media
                 mediaList.forEach(media => 
                     thumbnailList.forEach(function(thumb){
@@ -245,7 +316,7 @@ var mapPieceObject = function(whereClause, callback){
                 );
                 
               
-                 //get mediaInfo for each media
+                //get mediaInfo for each media
                 mediaList.forEach(media => 
                     mediaInfoList.forEach(function(mi){
                         if(media.id == mi.mediaId)
@@ -265,6 +336,36 @@ var mapPieceObject = function(whereClause, callback){
                             piece.media = m          
                     })
                 );
+
+                //get tags for each piece
+                pieceList.forEach(piece => 
+                    tagList.forEach(function(tag){
+                        if(piece.id == tag.pieceId)
+                            piece.tagList.push({
+                                id : tag.id,
+                                tag: tag.tag
+                            });
+                        
+                    })
+                );
+
+                //get tags for each media
+                pieceList.forEach(piece => 
+                    filterConfigList.forEach(function(fc){
+                        if(piece.id == fc.pieceId)
+                            piece.filterConfigList.push({
+                                id : fc.id,
+                                filterId: fc.filterId,
+                                pieceId : fc.pieceId,
+                                filterArgId : fc.filterArgId,
+                                value : fc.value,
+                                filterIndex : fc.filterIndex,
+                                filter : fc.filter
+                            });
+                        
+                    })
+                );
+
           
                 callback(err, pieceList);
     });

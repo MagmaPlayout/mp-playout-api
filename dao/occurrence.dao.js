@@ -97,7 +97,6 @@ occurrenceDao.update= function(occurrenceData,callback)
                     id : parseInt(occurrenceData.id)
                 }, 
                 function(err, result) {
-                    console.log(result);
                     callback(err, result);
                 }
     );

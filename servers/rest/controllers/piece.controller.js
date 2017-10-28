@@ -1,5 +1,7 @@
 var pieceDao = require ('../../../dao/piece.dao.js');
 var config = require('../../../config');
+var Log = require ("log"),
+	log = new Log("debug");
 
 /**
  * @author Luis Muñoz <luismunoz.dh@gmail.com>
@@ -44,7 +46,29 @@ pieceController.listAll = function(req, res) {
  */
 pieceController.update = function(req, res) { 
     
-    res.send(500, "Not implemented");
+	var piece = {
+        id : req.body.id,
+		name : req.body.name, 
+        filterConfigList : req.body.filterConfigList == null ? [] : JSON.parse(req.body.filterConfigList),
+        tagList : req.body.tagList == null ? [] : JSON.parse(req.body.tagList)    
+	};
+   
+    pieceDao.update(piece, function(err, result) {
+        var mgeError = "The media could not be updated";
+        
+        if(err) {
+            log.error(err.message);
+            return res.status(500).send(mgeError);
+        }        
+        else if(result == null){//incomplete transaction
+            
+            log.error(mge);
+            return res.status(500).send(mgeError);
+        }
+        else   
+            res.status(200).jsonp(result);
+
+    });
     
 };
 
@@ -62,16 +86,24 @@ pieceController.insert = function(req, res) {
         path : req.body.path,
         frameCount : req.body.frameCount,
         frameRate : req.body.frameRate,
-        filterList : req.body.filterList == null ? [] : JSON.parse(req.body.filterList),
+        filterConfigList : req.body.filterConfigList == null ? [] : JSON.parse(req.body.filterConfigList),
         tagList : req.body.tagList == null ? [] : JSON.parse(req.body.tagList)    
 	};
-
+   
     pieceDao.insert(piece, function(err, result) {
-
-        if(err) 
-            return res.status(500).send(err.message);
-     
-        res.status(200).jsonp(result);
+        var mgeError = "The media could not be created";
+        
+        if(err) {
+            log.error(err.message);
+            return res.status(500).send(mgeError);
+        }        
+        else if(result == null){//incomplete transaction
+            
+            log.error(mge);
+            return res.status(500).send(mgeError);
+        }
+        else   
+            res.status(200).jsonp(result);
 
     });
 };
