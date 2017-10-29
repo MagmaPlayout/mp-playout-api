@@ -14,7 +14,9 @@ pieceDao.getById = function(id,callback)
 {
     var whereClause = " p.id = " + id;
     
-    mapPieceObject(whereClause, callback);
+    mapPieceObject(whereClause, function(err,resp){
+        callback(err,resp[0]);
+    });
 	
 }
 
