@@ -100,7 +100,7 @@ pieceController.insert = function(req, res) {
         }        
         else if(result == null){//incomplete transaction
             
-            log.error(mge);
+            log.error(mgeError);
             return res.status(500).send(mgeError);
         }
         else   

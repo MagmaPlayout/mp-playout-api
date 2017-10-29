@@ -59,7 +59,7 @@ pieceDao.update= function(pieceData,callback)
         strQuery = strQuery + "DELETE FROM FilterConfig WHERE pieceId =" + pieceData.id + "; ";
         strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";    
         pieceData.filterConfigList.forEach(filConfig => {
-            strQuery = strQuery + "(" + pieceData.id + ", "+ filConfig.filterId +", 1, 'filterArgId hardcodeado', 1 )," // TO-DO: corregir hardcodeo
+            strQuery = strQuery + "(" + pieceData.id + ", "+ filConfig.filterId +", "+ filConfig.filterArgId + ", '" + filConfig.value + "', " + filConfig.filterIndex +"),"
         });
         strQuery = strQuery+ "; ";
         
@@ -105,7 +105,7 @@ pieceDao.insert = function(pieceData, callback)
     if(pieceData.filterConfigList.length > 0 ){
         strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";                                                                                                                    
         pieceData.filterConfigList.forEach(filConfig => {
-            strQuery = strQuery + "(@lastInsertedId,'"+ filConfig.filterId +"', 1, 'filterArgId hardcodeado', 1 )," // TO-DO: corregir hardcodeo
+            strQuery = strQuery + "(@lastInsertedId," + filConfig.filterId + ", "+ filConfig.filterArgId + ", '" + filConfig.value + "', " + filConfig.filterIndex +"),"
         });
         strQuery = strQuery + "; ";
     }
@@ -128,12 +128,20 @@ pieceDao.insert = function(pieceData, callback)
                 , 
                 function(err, result) { 
                     if(!err && result[1].info.affectedRows > 0 ){
-                        pieceData.id = result[1].info.insertId; 
+                        pieceDao.getById(result[1].info.insertId, function(err,resp){
+                            console.log("get by idddd");
+                            console.log(resp);
+                            if(!err)
+                                pieceData = resp;
+                            else
+                                pieceData = null;
+                            callback(err,pieceData);
+                        }); 
                     }                                                 
                     else{
                         pieceData = null;
-                    }
-                    callback(err,pieceData);
+                        callback(err,pieceData);
+                    }                
                 }
     );
     
@@ -298,7 +306,7 @@ var mapPieceObject = function(whereClause, callback){
                         filterId: item.fc_filterId,
                         pieceId : item.fc_pieceId,
                         filterArgId : item.filterArgId,
-                        value : item.fil_value,
+                        value : item.fc_value,
                         filterIndex : item.filterIndex,
                         filter : {
                             id : item.fil_id,
