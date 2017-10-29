@@ -19,7 +19,7 @@ function setup(app, controllers) {
 	app.get('/api/pieces/:id', controllers.piece.getById);
     app.get('/api/pieces', controllers.piece.listAll);
     app.get('/api/pieceswofilter', controllers.piece.getAllWithOutFilter);
-	app.put('/api/pieces/:id', controllers.piece.update);
+	app.put('/api/pieces', controllers.piece.update);
     app.post('/api/pieces', controllers.piece.insert);
 	app.delete('/api/pieces/:id', controllers.piece.delete);
 	app.get('/api/pieces/name/:name', controllers.piece.getByName);

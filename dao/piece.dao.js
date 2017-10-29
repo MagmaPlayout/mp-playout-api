@@ -33,33 +33,42 @@ pieceDao.listAll = function(callback)
 /**
  * update a piece
  */
-pieceDao.update= function(pieceData)
+pieceDao.update= function(pieceData,callback)
 {
-    var pieceOld = pieceDao.getById(pieceData.id);
+    //var pieceOld = pieceDao.getById(pieceData.id);
+    //console.log("piece olddddddddddddddddddddddddd")
+    //console.log(pieceOld)
 	var strQuery = "START TRANSACTION;"+
                     "UPDATE Piece  SET name = :name "+
-                    "WHERE id = :id ";
+                    "WHERE id = :id ;";
      
      //si hubo cambios en la lista de tags
-    if(pieceData.tagList != pieceData.tagList){
+    if(pieceData.tagList.length > 0){
         strQuery = strQuery + "DELETE FROM TagPieces WHERE pieceId =" + pieceData.id + "; ";
         strQuery = strQuery+"INSERT INTO TagPieces (pieceId, tagId) VALUES ";                                                                                                                    
         pieceData.tagList.forEach(tag => {
-            strQuery =  strQuery + "(" + pieceData.id + ", " + tag.id +"'),"
+            strQuery =  strQuery + "(" + pieceData.id + ", " + tag.id +"),"
         });
+
         strQuery = strQuery+ "; ";
 
     }
 
     //si hubo cambios en la lista de filterConfig
-    if(pieceData.filterConfigList != pieceOld.filterConfigList){
+    if(pieceData.filterConfigList.length > 0 ){
         strQuery = strQuery + "DELETE FROM FilterConfig WHERE pieceId =" + pieceData.id + "; ";
         strQuery = strQuery+"INSERT INTO FilterConfig (pieceId, filterId, filterArgId, value, filterIndex) VALUES ";    
         pieceData.filterConfigList.forEach(filConfig => {
-            strQuery = strQuery + "(" + pieceData.id + ", "+ filConfig.filterId +"', 1, 'filterArgId hardcodeado', 1 )," // TO-DO: corregir hardcodeo
+            strQuery = strQuery + "(" + pieceData.id + ", "+ filConfig.filterId +", 1, 'filterArgId hardcodeado', 1 )," // TO-DO: corregir hardcodeo
         });
+        strQuery = strQuery+ "; ";
+        
     }
-    strQuery = strQuery + ""
+    strQuery = strQuery + "COMMIT;";
+    strQuery = strQuery.replace("),;", ");");
+    strQuery = strQuery.replace("),;", ");");
+
+    
     db.query( strQuery,
                 pieceData             
                 , 

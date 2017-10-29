@@ -46,11 +46,12 @@ pieceController.listAll = function(req, res) {
  */
 pieceController.update = function(req, res) { 
     
+    //por ahora, estos son los atributos modificables.
 	var piece = {
         id : req.body.id,
 		name : req.body.name, 
-        filterConfigList : req.body.filterConfigList == null ? [] : JSON.parse(req.body.filterConfigList),
-        tagList : req.body.tagList == null ? [] : JSON.parse(req.body.tagList)    
+        filterConfigList :JSON.parse(req.body.filterConfigList),
+        tagList : JSON.parse(req.body.tagList)    
 	};
    
     pieceDao.update(piece, function(err, result) {
