@@ -131,8 +131,6 @@ pieceDao.insert = function(pieceData, callback)
                 function(err, result) { 
                     if(!err && result[1].info.affectedRows > 0 ){
                         pieceDao.getById(result[1].info.insertId, function(err,resp){
-                            console.log("get by idddd");
-                            console.log(resp);
                             if(!err)
                                 pieceData = resp;
                             else
@@ -211,6 +209,7 @@ var mapPieceObject = function(whereClause, callback){
                     "fc.id AS fc_id, fc.filterId AS fc_filterId, fc.pieceId AS fc_pieceId, fc.filterArgId, fc.value AS fc_value, fc.filterIndex, " +
                     "fil.id AS fil_id, fil.name AS fil_name, fil.description AS fil_description, " + 
                     "tp.id AS tp_id, tp.pieceId AS tp_pieceId, tp.tagId AS tp_tagId, " +
+                    "fa.id AS fa_id, fa.filterId AS fa_filterId, fa.key AS fa_key, fa.Description AS fa_description, " +
                     "tag.id AS tag_id, tag.tag " +
                 "FROM Piece p "+
                     "INNER JOIN Media m ON m.id = p.mediaId "+
@@ -220,6 +219,7 @@ var mapPieceObject = function(whereClause, callback){
 					"LEFT JOIN Tags tag ON tag.id = tp.tagId " +
                     "LEFT JOIN FilterConfig fc ON fc.pieceId = p.id " +
 					"LEFT JOIN Filter fil ON fil.id = fc.filterId "+
+                    "LEFT JOIN FilterArgs fa ON fa.id = fc.filterArgId "+
                 (whereClause == null  ? "" : " WHERE " + whereClause) +
                 " ORDER BY p.name "
                 
@@ -230,7 +230,7 @@ var mapPieceObject = function(whereClause, callback){
     var mediaInfoList = [];
     var tagList = [];
     var filterConfigList = [];
-
+   
 	db.query(query,
             function(err, rows) {
                 
@@ -314,13 +314,18 @@ var mapPieceObject = function(whereClause, callback){
                             id : item.fil_id,
                             name : item.fil_name,
                             description : item.fil_description
-                            //to-do -> falta lista de FilterArg
+                        },
+                        filterArg : {
+                            id : item.fa_id,
+                            filterId: item.fa_filterId,
+                            key : item.fa_key,
+                            description : item.fa_description
                         }
                        
 
                     }
                 });
-               
+
                 
                 //get thumbnails for each media
                 mediaList.forEach(media => 
@@ -368,7 +373,7 @@ var mapPieceObject = function(whereClause, callback){
                     })
                 );
 
-                //get tags for each media
+                //get filterConfig for each media
                 pieceList.forEach(piece => 
                     filterConfigList.forEach(function(fc){
                         if(piece.id == fc.pieceId)
@@ -379,7 +384,8 @@ var mapPieceObject = function(whereClause, callback){
                                 filterArgId : fc.filterArgId,
                                 value : fc.value,
                                 filterIndex : fc.filterIndex,
-                                filter : fc.filter
+                                filter : fc.filter,
+                                filterArg : fc.filterArg
                             });
                         
                     })
@@ -418,9 +424,7 @@ pieceDao.hasFilter = function (id, callback) {
                 "LEFT JOIN FilterConfig fc ON fc.pieceId = p.id "+
                 "WHERE p.id = ? AND fc.id IS NULL",
                 [id],
-        function (err, rows) {
-            console.log(err);
-            console.log(rows);
+        function (err, rows) {            
             callback(err, rows.length > 0 ? false : true);
         }
     );

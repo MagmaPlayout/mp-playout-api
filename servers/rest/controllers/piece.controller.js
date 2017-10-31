@@ -130,7 +130,7 @@ pieceController.delete = function(req, res) {
             
         }
         else{
-            console.log("The piece could not be deleted, has filters.");
+            console.log("The piece could not be deleted, has not filter.");
             return res.status(500).send("the media could not be deleted");
         }
 
