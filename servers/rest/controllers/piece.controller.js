@@ -49,7 +49,8 @@ pieceController.update = function(req, res) {
     //por ahora, estos son los atributos modificables.
 	var piece = {
         id : req.body.id,
-		name : req.body.name, 
+		name : req.body.name,
+        path : req.body.path, 
         filterConfigList :JSON.parse(req.body.filterConfigList),
         tagList : JSON.parse(req.body.tagList)    
 	};

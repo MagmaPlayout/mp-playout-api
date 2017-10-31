@@ -40,8 +40,8 @@ pieceDao.update= function(pieceData,callback)
     //var pieceOld = pieceDao.getById(pieceData.id);
     //console.log("piece olddddddddddddddddddddddddd")
     //console.log(pieceOld)
-	var strQuery = "START TRANSACTION;"+
-                    "UPDATE Piece  SET name = :name "+
+	var strQuery = "START TRANSACTION;" +
+                    "UPDATE Piece  SET name = :name, path = :path " +
                     "WHERE id = :id ;";
      
      //si hubo cambios en la lista de tags
@@ -74,7 +74,12 @@ pieceDao.update= function(pieceData,callback)
     db.query( strQuery,
                 pieceData             
                 , 
-                function(err, result) { 
+                function(err, result) {
+                    console.log(result);
+                    var tranError = (result.pop()).toString();
+                    if(tranError.includes("Error")){
+                        err = {message: tranError };
+                    } 
                     callback(err, result);
                 }
     );
@@ -128,8 +133,10 @@ pieceDao.insert = function(pieceData, callback)
                     frameRate : pieceData.frameRate
                 }              
                 , 
-                function(err, result) { 
-                    if(!err && result[1].info.affectedRows > 0 ){
+                function(err, result) {
+                    console.log(result);
+                    var tranError = (result.pop()).toString();
+                    if(!tranError.includes("Error") ){
                         pieceDao.getById(result[1].info.insertId, function(err,resp){
                             if(!err)
                                 pieceData = resp;
@@ -140,6 +147,7 @@ pieceDao.insert = function(pieceData, callback)
                     }                                                 
                     else{
                         pieceData = null;
+                        err = {message: tranError };
                         callback(err,pieceData);
                     }                
                 }
