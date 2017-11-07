@@ -1,21 +1,27 @@
-var mediaDao = require('../../../dao/media.dao');
+var pieceDao = require('../../../dao/piece.dao');
 var sketchDao = require('../../../dao/sketch.dao');
 
-/* register-handler.js */
-module.exports = function (socket) {
-  // registration related behaviour goes here...
-  socket.on('playoutLiveMode', function (data) {
-    console.log('liveModeInit request');
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
+module.exports = function (socket,log) {
 
-    mediaDao.listAll(function(err, result){
+  socket.on('playoutLiveMode', function (data) {
+   
+    log.info("trigger playoutLiveMode event");
+    
+    pieceDao.listAll(function(err, result){
 
       if(err)
         throw err;
 
-      socket.broadcast.emit("mediaList", result);
+      socket.broadcast.emit("pieceList", result);
 
     });
 
+    // TO-DO -> cambiar por filtros.
+    socket.broadcast.emit("sketchList", null);
+    /*
     sketchDao.listAll(function(err, result){
 
       if(err)
@@ -24,6 +30,7 @@ module.exports = function (socket) {
       socket.broadcast.emit("sketchList", result);
 
     })
+    */
 
   });
 

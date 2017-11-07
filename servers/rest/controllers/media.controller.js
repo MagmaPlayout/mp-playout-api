@@ -1,6 +1,9 @@
 var mediaDao = require ('../../../dao/media.dao.js');
-var config = require('../../../config'); // get our config file
+var config = require('../../../config');
 
+/**
+ * @author Luis Muñoz <luismunoz.dh@gmail.com>
+ */
 var mediaController = {};
 
 
@@ -8,11 +11,9 @@ var mediaController = {};
  * GET - Return a media with specified ID
  */
 mediaController.getById = function(req, res) { 
-
+    
     mediaDao.getById(req.params.id, function(err, result) {
 
-        console.log('GET /medias/:id' + req.params.id);
-        
         if(err) 
             return res.send(500, err.message);
      
@@ -29,8 +30,6 @@ mediaController.listAll = function(req, res) {
     
     mediaDao.listAll(function(err, result) {
 
-        console.log('GET /medias/');
-        
         if(err) 
             return res.send(500, err.message);
      
@@ -53,14 +52,15 @@ mediaController.update = function(req, res) {
         frameRate: req.body.fps,
         frameCount: req.body.frames,
         resolution: req.body.resolution,
-        path: req.body.path
+        path: req.body.path,
+        supplier: req.body.supplier
 
 	};
 
+
+
     mediaDao.update(media, function(err, result) {
 
-        console.log('PUT /medias/:id');
-    
         if(err) 
             return res.send(500, err.message);
      
@@ -83,13 +83,13 @@ mediaController.insert = function(req, res) {
         frameCount: req.body.frameCount,
         resolution: req.body.resolution,
         path: req.body.path,
-        thumbnails: req.body.thumbnails
+        thumbnails: req.body.thumbnails,
+        supplier: req.body.supplier
 	};
+
 
     mediaDao.insert(media, function(err, result) {
 
-        console.log('POST /medias');
-    
         if(err) 
             return res.status(500).send(err.message);
      
@@ -106,8 +106,6 @@ mediaController.delete = function(req, res) {
 
     mediaDao.delete(req.params.id, function(err, result) {
 
-        console.log('DEL /medias/:id' + req.params.id);
-    
         if(err) 
             return res.send(500, err.message);
      
@@ -123,8 +121,6 @@ mediaController.getByName= function(req, res){
 
     mediaDao.getByName(req.params.name, function(err, result) {
 
-        console.log('DEL /medias/name/:name' + req.params.name);
-    
         if(err) 
             return res.send(500, err.message);
     
@@ -141,7 +137,7 @@ mediaController.getByPathList= function(req, res){
     var pathList = JSON.parse(req.params.pathlist);
   
     mediaDao.getByPathList(pathList, function(err, result) {
-        console.log(result);
+    
         if(err) 
             return res.send(500, err.message);
     
@@ -151,4 +147,21 @@ mediaController.getByPathList= function(req, res){
      
 }
 
+/**
+ * GET - find medias by mediaId list
+ */
+mediaController.getByMediaIdList = function(req, res){
+   
+    var mediaIdList = JSON.parse(req.params.ids);
+    
+    mediaDao.getByMediaIdList(mediaIdList, function(err, result) {
+       
+        if(err) 
+            return res.status(500).send(err.message);
+    
+        res.status(200).jsonp(result);
+
+    });
+     
+}
 module.exports = mediaController;
